@@ -96,3 +96,5 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 66. „Pe telefon, scoate insignele: flacăra, inima, fulgerul și tabul Badges.”
 67. „Aplicația să fie fluidă, logică și, cel mai important, funcțională. Apoi lucrăm la monetizare.”
 68. „Iată review-ul lui Cristian: securitate, cifre greșite, date care se pierd, UX. Rezolvă-le.”
+69. „Testează și retestează tot drumul: încarc extrasul, primesc pe loc raportul despre cum cheltui și ce tip de comportament am, îl pot exporta, iar cine vrea pe termen lung poate trece la Premium.”
+70. „Hai să punem deja în aplicație o versiune Premium.”
