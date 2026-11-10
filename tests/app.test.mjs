@@ -499,3 +499,26 @@ test('receipt: the TOTAL line wins over item prices, subtotal and cash given', (
 test('price tag: the currency is reported with the amount', () => {
   assert.equal(app.parsePriceTag('RON 129,90\nEUR 25,95').currency, 'RON');
 });
+
+/* ---------- goal map adapts to the goal ---------- */
+test('goal map: about one step per month, between 4 and 12', () => {
+  assert.equal(app.goalSteps(2), 4);
+  assert.equal(app.goalSteps(7), 7);
+  assert.equal(app.goalSteps(30), 12);
+  assert.equal(app.goalSteps(0), 8);
+});
+test('goal map: 25/50/75% stars fall on distinct steps before the finish', () => {
+  for (let n = 4; n <= 12; n++){
+    const s = app.starSteps(n), ks = Object.keys(s).map(Number);
+    assert.equal(ks.length, 3, `n=${n}`);
+    assert.ok(ks.every(k => k >= 1 && k < n), `n=${n}`);
+    assert.deepEqual(Object.values(s).sort((a,b)=>a-b), [25,50,75]);
+  }
+});
+test('goal map: the goal name suggests its map', () => {
+  assert.equal(app.guessGoalType('Laptop for next semester'), 'tech');
+  assert.equal(app.guessGoalType('Vacanta in Grecia'), 'trip');
+  assert.equal(app.guessGoalType('Fond de rezerva'), 'cushion');
+  assert.equal(app.guessGoalType('Concert tickets'), 'other');
+  assert.ok(Object.keys(app.GOAL_TYPES).length === 8);
+});

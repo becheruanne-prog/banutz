@@ -670,6 +670,21 @@ a.brand:hover{color:color-mix(in srgb,var(--grape) 80%,var(--ink))}
 }
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.scan-box.scanning::after,#qAmount.need,#qAmount.pop,.sheet[open]{animation:none}}
+
+/* goal: a conversation with Banutz, and a map drawn from your goal */
+.goal-chat{gap:12px}
+.chat-row{display:flex;gap:12px;align-items:flex-start}
+.chat-cat{width:64px;height:64px;flex:none}
+.chat-cat svg{width:64px;height:64px;display:block}
+.chat-bubbles{display:grid;gap:6px}
+.bubble{margin:0;background:var(--accent-soft);color:var(--ink);border-radius:4px 16px 16px 16px;padding:10px 14px;font-weight:800;line-height:1.35}
+.bubble.small{font-weight:600;font-size:.92rem;background:var(--surface);border:1px solid var(--line)}
+.goal-types{display:flex;flex-wrap:wrap;gap:8px}
+.goal-types button{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer;min-height:44px;transition:transform .15s,border-color .15s,background .15s}
+.goal-types button span{font-size:1.2rem}
+.goal-types button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.goal-types button:active{transform:scale(.96)}
+.board-wrap{background-color:color-mix(in srgb,var(--land,#F4F1FF) 70%,var(--surface)) !important;transition:background-color .4s}
 /* price-tag scanner */
 .scan-row{display:flex}
 .scan-btn{display:inline-flex;align-items:center;gap:10px;width:100%;justify-content:center;background:var(--accent-soft);color:var(--ink);border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
@@ -993,6 +1008,11 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <!-- GOAL -->
     <section class="view" data-view="goal" hidden>
       <p class="mantra">We don't save out of fear or scarcity, and not just to survive. We save <b>with a goal in mind</b>: small changes to today's habits that make us better spenders now and better investors later.</p>
+      <section class="panel goal-chat" id="goalChat" aria-label="Pick your goal">
+        <div class="chat-row"><div class="cat chat-cat" id="chatCat" data-mood="supportive" aria-hidden="true"></div>
+          <div class="chat-bubbles"><p class="bubble" id="chatHello"></p><p class="bubble small" id="chatHint"></p></div></div>
+        <div class="goal-types" id="goalTypes" role="group" aria-label="What are you saving for?"></div>
+      </section>
       <section class="panel board" id="boardPanel" aria-label="Your goal trail">
         <div class="panel-head"><h2>Your goal trail</h2><span class="label" id="boardLabel"></span></div>
         <div class="gbar" id="gbar"></div>
@@ -1770,6 +1790,7 @@ function readGoal(){
     amount: Math.max(0, +document.getElementById('gAmount').value || 0),
     date: document.getElementById('gDate').value,
     saved: Math.max(0, +document.getElementById('gSaved').value || 0),
+    type: goal.type || null,
   };
   try{ localStorage.setItem('spendmap.goal', JSON.stringify(goal)); }catch(e){}
   renderGoal(); renderGame();
@@ -2255,20 +2276,74 @@ function autoSaved(){ return savingsMoves(transfers).reduce((a,t)=>a-t.amount, 0
 function goalSaved(){ return Math.max(0, +goal.saved || 0) + autoSaved(); }
 
 /* ---------- goal trail ---------- */
-const TILES = 8;                       // 8 steps of 12.5%; stars at 25, 50 and 75%
+/* Each goal draws its own map: its finish line, the landmarks at 25/50/75% and the colour of the land. */
+const GOAL_TYPES = {
+  trip:    {label:'A trip',             finish:'✈️', marks:['🧳','🗺️','🛂'], tint:'#CDEAF8', name:'Trip abroad'},
+  tech:    {label:'Laptop or gadget',   finish:'💻', marks:['🔌','📦','🖱️'], tint:'#E6DEFC', name:'Laptop for next semester'},
+  cushion: {label:'Safety cushion',     finish:'☂️', marks:['🧱','🏠','🛡️'], tint:'#FBEFC1', name:'Safety cushion'},
+  car:     {label:'A car',              finish:'🚗', marks:['🛞','🔑','⛽'], tint:'#FADBD0', name:'My first car'},
+  study:   {label:'Course or studies',  finish:'🎓', marks:['📚','✏️','🧠'], tint:'#D3F2D6', name:'A course I want'},
+  business:{label:'My own business',    finish:'🚀', marks:['💡','🛠️','📣'], tint:'#FFE3D1', name:'Starting my business'},
+  invest:  {label:'First investment',   finish:'📈', marks:['🌱','🌿','🌳'], tint:'#D9F5EC', name:'My first investment'},
+  other:   {label:'Something else',     finish:'🌟', marks:['🎯','🎈','🎁'], tint:'#F4F1FF', name:''}
+};
+/* How many steps the map has: about one per month until the deadline, between 4 and 12. Pure, for tests. */
+function goalSteps(monthsLeft){ return monthsLeft > 0 ? Math.max(4, Math.min(12, Math.round(monthsLeft))) : 8; }
+/* Which steps carry the 25/50/75% stars on a map of n steps. Pure, for tests. */
+function starSteps(n){ const out = {}; [25,50,75].forEach(m=>{ const k = Math.max(1, Math.min(n-1, Math.round(n*m/100))); if (!out[k]) out[k] = m; }); return out; }
+function guessGoalType(name){
+  const n = String(name||'').toUpperCase();
+  if (/TRIP|TRAVEL|VACAN|HOLIDAY|CALATOR|VACANT|CONCEDIU|FLIGHT|ZBOR/.test(n)) return 'trip';
+  if (/LAPTOP|PHONE|TELEFON|IPHONE|MAC|PC|TABLET|CAMERA|CONSOL/.test(n)) return 'tech';
+  if (/CUSHION|EMERGENC|RAINY|SAFETY|REZERV|URGENT/.test(n)) return 'cushion';
+  if (/CAR\b|MASINA|AUTO|MOTOR|SCOOTER/.test(n)) return 'car';
+  if (/COURSE|CURS|MASTER|STUD|SCHOOL|UNIVERS|EXAM|LANGUAGE/.test(n)) return 'study';
+  if (/BUSINESS|AFACER|STARTUP|FIRMA|SHOP/.test(n)) return 'business';
+  if (/INVEST|ETF|STOCK|ACTIUN|PORTOF/.test(n)) return 'invest';
+  return 'other';
+}
 let tokenFrac = null;
 /* Which milestones (25/50/75/100%) were crossed going from one saved amount to another. Pure, for tests. */
 function crossedMilestones(amount, before, after){
   if (!(amount > 0)) return [];
   return [25,50,75,100].filter(m => before/amount*100 < m && after/amount*100 >= m);
 }
+function renderGoalChat(){
+  const box = document.getElementById('goalTypes'); if (!box) return;
+  const cur = goal.type || (goal.amount ? guessGoalType(goal.name) : null);
+  box.innerHTML = Object.entries(GOAL_TYPES).map(([id,t])=>`<button type="button" data-type="${id}" aria-pressed="${id===cur}"><span aria-hidden="true">${t.finish}</span>${t.label}</button>`).join('');
+  const cat = document.getElementById('chatCat'); if (!cat.firstChild) cat.innerHTML = catSVG({});
+  const has = goal.amount > 0, steps = goalSteps(monthsUntil(goal.date)), gt = GOAL_TYPES[cur] || GOAL_TYPES.other;
+  cat.dataset.mood = has ? 'youcan' : 'supportive';
+  document.getElementById('chatHello').textContent = has
+    ? `Your map to ${goal.name || 'your goal'} ${gt.finish} has ${steps} steps, about one a month until ${goal.date ? monthLabel(goal.date) : 'you get there'}.`
+    : 'Hey, do you have a goal? Something you are dreaming of: a trip, a laptop, a cushion for rainy days?';
+  document.getElementById('chatHint').textContent = has
+    ? 'Dreaming of something else? Pick it below and I will draw a new map. Change the cost or the date under the map anytime.'
+    : 'Pick one below, tell me what it costs and by when, and I will draw your map.';
+}
+document.getElementById('goalTypes').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if (!b) return;
+  const t = b.dataset.type, gt = GOAL_TYPES[t], nameEl = document.getElementById('gName');
+  const wasDefault = !nameEl.value || Object.values(GOAL_TYPES).some(x=>x.name && x.name === nameEl.value);
+  if (wasDefault) nameEl.value = gt.name;
+  goal.type = t; sfx('tap'); buzz(10);
+  readGoal();
+  const empty = ['gName','gAmount','gDate'].map(id=>document.getElementById(id)).find(el=>!el.value);
+  if (empty) setTimeout(()=>empty.focus(), 60);
+  else document.getElementById('boardPanel').scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block:'start'});
+});
 function renderBoard(P){
+  renderGoalChat();
   const box = document.getElementById('board'), bar = document.getElementById('gbar'), lab = document.getElementById('boardLabel');
   const amount = Math.max(0, +goal.amount || 0), auto = autoSaved(), saved = Math.min(amount, goalSaved());
   if (!amount){ box.innerHTML = '<p class="empty" style="padding:16px">Type what your goal costs below to lay out your trail.</p>'; bar.innerHTML = ''; lab.textContent = ''; return; }
   const frac = saved/amount, pct = Math.round(frac*100);
   const atDeadline = (P && P.monthsLeft > 0 && P.plan > 0) ? Math.min(1, (saved + P.plan*P.monthsLeft)/amount) : frac;
   const name = esc(goal.name || 'your goal');
+  const GT = GOAL_TYPES[goal.type] || GOAL_TYPES[guessGoalType(goal.name)] || GOAL_TYPES.other;
+  const TILES = goalSteps(monthsUntil(goal.date)), STARS = starSteps(TILES);
+  const wrap = typeof box.closest === 'function' ? box.closest('.board-wrap') : null; if (wrap && wrap.style) wrap.style.setProperty('--land', GT.tint);
   lab.textContent = pct >= 100 ? 'Goal reached' : `${TILES - Math.floor(frac*TILES)} step${TILES - Math.floor(frac*TILES)===1?'':'s'} to go`;
   bar.innerHTML = `<div class="row"><span>${lei(saved)} of ${lei(amount)}</span><span class="pct">${pct}%</span></div>
     <div class="track2" role="progressbar" aria-label="Saved for ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">
@@ -2277,7 +2352,7 @@ function renderBoard(P){
     <div class="row muted" style="font-weight:700;font-size:.8rem"><span>${auto > 0 ? `${lei(auto)} moved to savings, found in your statements · ${lei(Math.max(0, +goal.saved || 0))} added by you` : `${lei(Math.max(0, +goal.saved || 0))} added by you`}</span><span>${atDeadline > frac ? `Striped: where your plan gets you by ${monthLabel(goal.date)}` : 'Stars at 25, 50 and 75%'}</span></div>`;
   // the trail: a winding path drawn once, tiles and the token placed along its length
   // wide trail on screens with room, a tall winding trail on phones so every label stays readable
-  const tall = (box.clientWidth || 720) < 520;
+  const tall = (box.clientWidth || (typeof innerWidth === 'number' ? innerWidth - 40 : 720)) < 520;   // drawn while hidden: judge by the screen
   const W = tall ? 360 : 720, H = tall ? 670 : 362;
   const d = tall
     ? 'M70,78 C250,40 320,150 190,190 S40,270 110,330 S330,370 270,445 S60,500 100,560 S240,640 250,600'
@@ -2292,10 +2367,10 @@ function renderBoard(P){
   const COLORS = ['var(--accent)','var(--grape)','var(--pink)','var(--flame)','var(--c5)','var(--c2)','var(--c4)'];
   let tiles = '';
   for (let k = 0; k <= TILES; k++){
-    const p = pt(k/TILES), done = frac >= k/TILES && k > 0, star = k===2 || k===4 || k===6, end = k===TILES;
+    const p = pt(k/TILES), done = frac >= k/TILES && k > 0, star = !!STARS[k] && k < TILES, end = k===TILES, mi = [25,50,75].indexOf(STARS[k]);
     if (k===0){ tiles += `<g><rect x="${p.x-30}" y="${p.y-18}" width="60" height="36" rx="12" fill="var(--ink)"/><text x="${p.x}" y="${p.y+6}" text-anchor="middle" style="fill:var(--bg);font-size:15px">START</text></g>`; continue; }
     if (end){ tiles += `<g><circle cx="${p.x}" cy="${p.y}" r="30" fill="var(--sun)" stroke="color-mix(in srgb,var(--sun) 55%,#7a5200)" stroke-width="4"/>
-      <path d="M${p.x-15},${p.y+2} h30 v12 a3,3 0 0 1 -3,3 h-24 a3,3 0 0 1 -3,-3z M${p.x-16},${p.y-6} h32 v8 h-32z" fill="${done?'var(--mint)':'#7a5200'}"/><rect x="${p.x-3}" y="${p.y-6}" width="6" height="22" fill="var(--sun)"/>
+      <text x="${p.x}" y="${p.y+11}" text-anchor="middle" style="font-size:30px">${GT.finish}</text>
       <text x="${Math.min(p.x + 34, W - 8)}" y="${p.y-40}" text-anchor="end" style="font-size:14px">${name.length > 24 ? name.slice(0,23)+'…' : name}</text>
       <text x="${Math.min(p.x + 34, W - 8)}" y="${p.y+50}" text-anchor="end" style="font-size:12px;fill:var(--muted)">${lei(amount)}${when(k) && when(k)!=='Done' ? ' · ' + when(k) : ''}</text><title>${name}: ${lei(amount)}</title></g>`; continue; }
     const c = COLORS[(k-1) % COLORS.length];
@@ -2303,8 +2378,8 @@ function renderBoard(P){
       ? `<path d="${starPath(p.x, p.y, 24, 11)}" fill="${done?'var(--sun)':'var(--surface)'}" stroke="${done?'color-mix(in srgb,var(--sun) 55%,#7a5200)':c}" stroke-width="3.5" stroke-linejoin="round"/>`
       : `<rect x="${p.x-17}" y="${p.y-17}" width="34" height="34" rx="10" fill="${done?c:'var(--surface)'}" stroke="${c}" stroke-width="3.5"/>`}
       <text x="${p.x}" y="${p.y+5}" text-anchor="middle" style="font-size:13px;fill:${done && !star ? '#fff' : 'var(--ink)'}">${done ? '✓' : k}</text>
-      ${star ? `<text x="${p.x}" y="${p.y+40}" text-anchor="middle" style="font-size:11px;fill:var(--muted)">${k*100/TILES}% · ${when(k)}</text>` : ''}
-      <title>Step ${k}: ${lei(amount*k/TILES)}${star ? `, ${k*100/TILES}% milestone` : ''}</title></g>`;
+      ${star ? `<text x="${p.x}" y="${p.y-30}" text-anchor="middle" style="font-size:22px">${GT.marks[mi] || '⭐'}</text><text x="${p.x}" y="${p.y+40}" text-anchor="middle" style="font-size:11px;fill:var(--muted)">${STARS[k]}% · ${when(k)}</text>` : ''}
+      <title>Step ${k}: ${lei(amount*k/TILES)}${star ? `, ${STARS[k]}% milestone` : ''}</title></g>`;
   }
   box.querySelector('#trailTiles').innerHTML = tiles;
   if (atDeadline > frac && atDeadline < 1){ const p = pt(atDeadline);

@@ -8,7 +8,7 @@ import { embedSamples } from '../scripts/build-lib.mjs';
 const SRC = fileURLToPath(new URL('../src/spend-map.html', import.meta.url));
 
 const EXPORTS = [
-  'parsePriceTag', 'tagMerchant', 'moodForView', 'buddyLine', 'parseCSV', 'parseAmount', 'parseDate', 'rowsToTx', 'billFromText', 'merchantKey',
+  'parsePriceTag', 'tagMerchant', 'goalSteps', 'starSteps', 'guessGoalType', 'GOAL_TYPES', 'moodForView', 'buddyLine', 'parseCSV', 'parseAmount', 'parseDate', 'rowsToTx', 'billFromText', 'merchantKey',
   'categorize', 'recurring', 'budgetCheck', 'monthsUntil', 'sampleData', 'setData',
   'dataStats', 'days', 'CATS', 'SAMPLE_FILES', 'goalPlan', 'findTransfers', 'recurringIncome', 'projectBalance', 'allRows', 'restoreBackup', 'backupObject',
   'loadData', 'STORE', 'applyUserCats', 'setUserCats', 'futureValue', 'billCurrency', 'behaviourPatterns', 'sttwScore', 'sttwType', 'isUnsorted', 'crossedMilestones', 'savingsMoves',
