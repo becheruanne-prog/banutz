@@ -1,6 +1,6 @@
 # Cum contribui la Banutz
 
-Repo-ul e al vostru. Faceți o copie, schimbați ce vreți și propuneți schimbarea printr-un pull request. Anne se uită la ea, o aprobă, iar după aprobare intră în aplicație și site-ul se actualizează singur.
+Repo-ul e al vostru. Faceți o copie, schimbați ce vreți și propuneți schimbarea printr-un pull request. Anne se uită la ea și o aprobă, iar schimbarea intră în repo. Site-ul banutz.ro nu se schimbă automat: Anne decide când publică o versiune nouă pe site.
 
 ## Pașii
 
@@ -31,4 +31,4 @@ Dacă te încurci, întreabă Claude Code: „Ajută-mă să fac un fork și un 
 
 # Contributing (English)
 
-Fork, branch, change, run `npm run check`, open a pull request with a screenshot. Anne reviews and merges; the site then updates on its own. Never commit real bank data. One idea per pull request.
+Fork, branch, change, run `npm run check`, open a pull request with a screenshot. Anne reviews and merges into the repo. Merging does not change banutz.ro: Anne decides when a new version goes on the website. Never commit real bank data. One idea per pull request.

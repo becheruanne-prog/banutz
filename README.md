@@ -45,7 +45,7 @@ tests/app.test.mjs      tests for parsing, dates, bills, categories, spender typ
 4. Add or update a test in `tests/app.test.mjs` for any logic you change.
 5. Run `npm run check`. Everything must pass.
 6. Open the app with `npm run serve` and click through what you changed, on desktop and phone width.
-7. Push your branch and open a pull request. GitHub Actions runs the tests on it. When it is merged into `main`, the website updates.
+7. Push your branch and open a pull request. GitHub Actions runs the tests on it. When Anne merges it, it joins `main`. The website does not change on merge: banutz.ro is published only when Anne starts a deploy and approves it.
 
 You can do all of this by asking Claude Code in plain words, for example: "Help me fork this repo and open a pull request for my change."
 

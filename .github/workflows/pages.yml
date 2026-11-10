@@ -1,5 +1,6 @@
-# On every push to main: run the tests, build the app, publish it to GitHub Pages.
-# If a test fails, nothing is published and the live site stays on the last good version.
+# Every pull request and every merge into main: run the tests and build the app. Nothing is published.
+# The website (banutz.ro) is published ONLY when Anne starts this workflow by hand ("Run workflow"),
+# and the github-pages environment then waits for her approval. Merging a pull request never changes the site.
 name: Test, build and publish
 
 on:
@@ -36,12 +37,12 @@ jobs:
           cp privacy.html _site/privacy.html
           cp -r samples _site/samples
       - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'workflow_dispatch'
         with:
           path: _site
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: test-and-build
     runs-on: ubuntu-latest
     environment:
