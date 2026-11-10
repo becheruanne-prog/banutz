@@ -1,0 +1,16 @@
+{
+  "name": "Banutz · Save to grow",
+  "short_name": "Banutz",
+  "description": "Upload your bank statement and get your money report: how you spend and what to adjust. Everything stays on your phone.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEEEF2",
+  "theme_color": "#5B3DD6",
+  "lang": "en",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

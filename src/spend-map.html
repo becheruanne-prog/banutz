@@ -1081,7 +1081,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
           <tr><td>Weekend spending</td><td><span class="kind k-ind">Industry data</span> + <span class="kind k-own">app's rule</span></td><td>Card data from over 50 million customers shows more spending on Fridays and Saturdays: JPMorgan Chase Institute, 2016 (<a href="https://www.jpmorganchase.com/institute/news-events/insight-big-spend-on-the-weekend" target="_blank" rel="noopener">insight</a>). The 1.2× level is this app's rule of thumb.</td></tr>
           <tr><td>Small treats and coffee</td><td><span class="kind k-own">Awareness only</span></td><td>From David Bach's “latte factor”; critics note small cuts alone rarely make anyone wealthy (Helaine Olen, <a href="https://slate.com/articles/business/the_united_states_of_debt/2016/05/the_latte_is_a_lie_and_buying_coffee_has_nothing_to_do_with_debt_an_excerpt.html" target="_blank" rel="noopener"><i>Pound Foolish</i></a>). Shown to build awareness. The 30 lei and 5-a-week levels are this app's.</td></tr>
           <tr><td>Pay yourself first, 10%</td><td><span class="kind k-adv">Published advice</span></td><td>“A part of all you earn is yours to keep. It should be not less than a tenth”: George S. Clason, <i>The Richest Man in Babylon</i>, 1926 (<a href="https://en.wikisource.org/wiki/The_Richest_Man_In_Babylon/Chapter_2" target="_blank" rel="noopener">text</a>).</td></tr>
-          <tr><td>Impulse buys, subscriptions, delivery, steady weeks</td><td><span class="kind k-own">App's rule of thumb</span></td><td>Counted straight from your payments; the levels that flag them are this app's choice.</td></tr>
+          <tr><td>Shopping, subscriptions, delivery, steady weeks</td><td><span class="kind k-own">App's rule of thumb</span></td><td>Counted straight from your payments; the levels that flag them are this app's choice.</td></tr>
           <tr><td>Future You growth</td><td><span class="kind k-res">Standard maths</span></td><td>Regular saving with monthly compounding. The growth rate is an example you set, not a forecast; inflation and taxes are not included.</td></tr>
           <tr><td>Categories</td><td><span class="kind k-own">App's rule</span></td><td>Matched by shop name; your own choices always win.</td></tr>
         </tbody></table></div>
@@ -1231,21 +1231,22 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <div id="chipTip" class="chip-tip" role="dialog" aria-labelledby="chipTipT" hidden><b id="chipTipT"></b><p id="chipTipP"></p><button type="button" class="link" id="chipTipX">Got it</button></div>
     <div id="confetti" aria-hidden="true"></div>
     <div id="rain" aria-hidden="true"></div>
-    <footer><span class="beta-pill">Beta</span> <a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
+    <footer><span class="beta-pill">Beta</span> <a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Categories are guessed from the shop name, so correct anything that looks wrong; Banutz remembers your choice.</footer>
   </main>
     <article id="printReport" class="print-report" aria-hidden="true"></article>
     <div id="tour" class="tour" hidden><div class="tour-ring" id="tourRing"></div><div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" tabindex="-1"><div class="tour-top"><span class="label" id="tourStep"></span></div><h2 id="tourTitle"></h2><p id="tourText"></p><div class="tour-btns"><button type="button" class="link" id="tourSkip">Skip the tour</button><span><button type="button" class="btn" id="tourBack">Back</button> <button type="button" class="btn primary" id="tourNext">Next</button></span></div></div></div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" integrity="sha384-SnzOobpRMLXZ52iJvZm/C0fYw0OQemTXzTjIsdsfMcrCtCEe9qgzxTd3RSklO5x2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 /* Show any script failure on the page instead of failing silently. */
 /* Students get a plain message, never a silent failure: what broke, that their data is safe, and what to do. */
 function showError(msg, {offline=false} = {}){
   const e = document.getElementById('err'), m = document.getElementById('errMsg'); if (!e || !m) return;
-  m.innerHTML = offline
+  m.innerHTML = arguments[1] && arguments[1].keep
+    ? '<b>Keep your data on this iPhone.</b> Tap Share, then <b>Add to Home Screen</b>, and open Banutz from there. Otherwise Safari can clear it after a week without a visit.'
+    : offline
     ? '<b>You are offline.</b> Banutz still works with what is on this phone. Scanning a price tag and reading PDF bills need the internet.'
     : '<b>Oops, this part is broken.</b> ' + String(msg).replace(/^(Uncaught\s+)?(\w*Error:\s*)?/,'').replace(/[<>&]/g, '') + '. Your data is safe on this device. Reload the page and try again; if it keeps happening, tell us on GitHub.';
+  const rl = document.getElementById('errReload'); if (rl) rl.hidden = !!(offline || (arguments[1] && arguments[1].keep));
   e.hidden = false;
 }
 document.addEventListener('click', ev=>{ const t = ev.target; if (!t || !t.closest) return;
@@ -1263,11 +1264,11 @@ const CATS = [
   {id:'fuel',  name:'Gasoline',              color:'var(--c10)', re:/OMV|PETROM|\bMOL\b|LUKOIL|ROMPETROL|SOCAR|GAZPROM|\bSHELL\b|BENZINA|CARBURANT|FUEL/},
   {id:'eat',   name:'Eating out & coffee',   color:'var(--c3)',  re:/GLOVO|TAZZ|BOLT FOOD|FOODPANDA|5 TO GO|STARBUCKS|COFFEE|CAFE|CAFENEA|CANTINA|MCDONALD|KFC|BURGER KING|SUBWAY|SPARTAN|PIZZA|SHAORMA|DONER|SUSHI|RESTAURANT|BISTRO|BRASERIE|BERARIE|TAVERNA|TRATTORIA|PATISERIE|COFETARIE|\bPAUL\b|\bLUCA\b|FIVE GUYS|FAST FOOD/},
   {id:'move',  name:'Transport',             color:'var(--c4)',  re:/BOLT|UBER|\bSTB\b|METROREX|\bCFR\b|TAXI|FREE ?NOW|CLEVER|PARKING|PARCARE|\bTPBI\b|\bCTP\b|FLIXBUS|WIZZ|RYANAIR|TAROM|ROVINIETA|\bLIME\b/},
-  {id:'shop',  name:'Impulse shopping',      color:'var(--c11)', re:/EMAG|TEMU|SHEIN|ZARA|H&M|H M\b|BERSHKA|PULL|STRADIVARIUS|RESERVED|SINSAY|NEW YORKER|ALIEXPRESS|AMAZON(?! PRIME)|ALTEX|FLANCO|SEPHORA|NOTINO|DOUGLAS|FASHION DAYS|ANSWEAR|ABOUT YOU|ZALANDO|PEPCO/},
-  {id:'subs',  name:'Phone & subscriptions', color:'var(--c5)',  re:/SPOTIFY|NETFLIX|ORANGE|VODAFONE|TELEKOM|APPLE|GOOGLE|ICLOUD|YOUTUBE|HBO|MAX\.COM|DISNEY|VOYO|SKYSHOWTIME|PRIME VIDEO|AMAZON PRIME|CHATGPT|OPENAI|CANVA|DUOLINGO|ADOBE|MICROSOFT/},
+  {id:'shop',  name:'Shopping',              color:'var(--c11)', re:/EMAG|TEMU|SHEIN|ZARA|H&M|H M\b|BERSHKA|PULL|STRADIVARIUS|RESERVED|SINSAY|NEW YORKER|ALIEXPRESS|AMAZON(?! PRIME)|ALTEX|FLANCO|SEPHORA|NOTINO|DOUGLAS|FASHION DAYS|ANSWEAR|ABOUT YOU|ZALANDO|PEPCO/},
+  {id:'subs',  name:'Phone & subscriptions', color:'var(--c5)',  re:/SPOTIFY|NETFLIX|ORANGE|VODAFONE|TELEKOM|APPLE\.COM|ITUNES|APPLE (MUSIC|TV|ONE|SERVICES)|GOOGLE (PLAY|ONE|STORAGE|CLOUD|WORKSPACE)|GOOGLE ?\*|ICLOUD|YOUTUBE|HBO|MAX\.COM|DISNEY|VOYO|SKYSHOWTIME|PRIME VIDEO|AMAZON PRIME|CHATGPT|OPENAI|CANVA|DUOLINGO|ADOBE|MICROSOFT/},
   {id:'pet',   name:'Pet',                   color:'var(--c12)', re:/PET ?SHOP|\bPET\b|ANIMAX|ZOOMART|MAXI ?PET|VETERIN|\bZOO/},
   {id:'health',name:'Health & pharmacy',     color:'var(--c13)', re:/FARMACI|CATENA|HELP NET|DR\.? ?MAX|SENSIBLU|\bBENU\b|REGINA MARIA|MEDLIFE|SANADOR|MEDICOVER|SYNEVO|BIOCLINICA|CLINICA|STOMATOLOG|DENTAL|OPTIC/},
-  {id:'school',name:'School & books',        color:'var(--c6)',  re:/CARTURESTI|LIBRAR|XEROX|COPY|UNIVERSIT|FACULTATE|TAXA|PAPETARIE|DIVERTA|HUMANITAS|UDEMY|COURSERA/},
+  {id:'school',name:'School & books',        color:'var(--c6)',  re:/CARTURESTI|LIBRAR|XEROX|COPY|UNIVERSIT|FACULTATE|TAXA (DE )?(SCOLARIZARE|STUDII|ADMITERE|INSCRIERE|EXAMEN|LICENTA|MASTER)|PAPETARIE|DIVERTA|HUMANITAS|UDEMY|COURSERA/},
   {id:'fun',   name:'Going out & fun',       color:'var(--c7)',  re:/CINEMA|CLUB|STEAM|PLAYSTATION|BILET|IABILET|ENTERTIX|EVENTIM|CONCERT|\bBAR\b|\bPUB\b|BOWLING|ESCAPE|KARAOKE|BILIARD|MUZEU/},
   {id:'other', name:'Other',                 color:'var(--c8)',  re:null},
 ];
@@ -1281,22 +1282,28 @@ let rules = {};
 try { rules = JSON.parse(localStorage.getItem('spendmap.rules')||'{}') || {}; } catch(e){ rules = {}; }
 function saveRules(){ try{ localStorage.setItem('spendmap.rules', JSON.stringify(rules)); }catch(e){} }
 
-const STOP = new Set(['BUCURESTI','BUCHAREST','CLUJ','IASI','RO','ROU','SRL','SA','POS','CARD','PLATA','LA','COM','EU','WWW','AMSTERDAM','DUBLIN','LONDON','LUXEMBOURG']);
+const STOP = new Set(['BUCURESTI','BUCHAREST','CLUJ','IASI','RO','ROU','SRL','SA','POS','CARD','PLATA','LA','COM','EU','WWW','AMSTERDAM','DUBLIN','LONDON','LUXEMBOURG',
+  'NON','BT','CU','VISA','MASTERCARD','MAESTRO','ELECTRON','DEBIT','CONTACTLESS','CUMPARARE','TRANZACTIE','COMERCIANT','NR','REF','AUTORIZATIE','TERMINAL']);
+/* ă â î ș ț (both comma and cedilla forms) become a a i s t, so ÎNTREȚINERE matches INTRETINERE */
+const norm = s => String(s == null ? '' : s).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+/* words banks put in front of the shop name: "Plata la POS non-BT cu card VISA MEGA IMAGE" is MEGA IMAGE */
+const BANK_WORDS = /\b(PLATA (LA|CU) (POS|CARD)( NON[- ]?BT)?|CUMPARARE (POS|CARD|ONLINE)|TRANZACTIE (POS|CARD|COMERCIANT)|(CU )?CARD(UL)? (VISA|MASTERCARD|MAESTRO|DEBIT)( ELECTRON| BUSINESS)?|APPLE PAY|GOOGLE PAY)\b/g;
+const shopText = desc => norm(desc).replace(BANK_WORDS, ' ').replace(/\s+/g, ' ').trim();
 function merchantKey(desc){
-  const words = desc.toUpperCase().replace(/[^A-Z ]+/g,' ').split(/\s+/).filter(w=>w.length>1 && !STOP.has(w));
+  const words = shopText(desc).replace(/[^A-Z ]+/g,' ').split(/\s+/).filter(w=>w.length>1 && !STOP.has(w));
   return words.slice(0,2).join(' ') || desc.toUpperCase().slice(0,20);
 }
 function niceName(key){ return key.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()); }
 /* True when no rule, no choice of yours and no known merchant placed this payment. */
 function isUnsorted(t){
   if (t.amount >= 0 || t.fixed || rules[t.key]) return false;
-  const d = t.desc.toUpperCase();
+  const d = shopText(t.desc);
   return !CATS.some(c => c.re && c.re.test(d));
 }
 function categorize(t){
   if (t.fixed && CAT[t.fixed]) return t.fixed;
   if (rules[t.key]) return rules[t.key];
-  const d = t.desc.toUpperCase();
+  const d = shopText(t.desc);
   for (const c of CATS) if (c.re && c.re.test(d)) return c.id;
   return 'other';
 }
@@ -1379,6 +1386,7 @@ function parseAmount(s){
   const lc = s.lastIndexOf(','), ld = s.lastIndexOf('.');
   if (lc>-1 && ld>-1){ const dec = lc>ld?',':'.'; s = s.split(dec===','?'.':',').join(''); s = s.replace(',', '.'); }
   else if (lc>-1){ s = /,\d{1,2}$/.test(s) ? s.replace(/\./g,'').replace(',','.') : s.replace(/,/g,''); }
+  else if (ld>-1 && /^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g,'');   // thousands dots with no decimals: 2.500 = 2500
   const v = parseFloat(s); if (isNaN(v)) return null;
   return neg ? -v : v;
 }
@@ -1402,6 +1410,8 @@ function rowsToTx(rows){
       if (amount===null || amount===0) continue;
       out.push({date, desc:(r[si]||'').trim().replace(/\s+/g,' ') || 'Unknown', amount});
     }
+    // number identical rows inside one file (two 12-lei coffees on the same day are two purchases)
+    const occ = {}; for (const t of out){ const k = t.date+'|'+t.desc+'|'+t.amount.toFixed(2); occ[k] = (occ[k]||0) + 1; if (occ[k] > 1) t.n = occ[k]; }
     if (out.length) return out;
   }
   return null;
@@ -1409,7 +1419,7 @@ function rowsToTx(rows){
 
 /* ---------- state ---------- */
 let tx = [], transfers = [], foreign = [], isSample = true, files = [], month = 'all', showAll = false;
-const clean = ({date,desc,amount,src,fixed,cur,photo}) => ({date,desc,amount,...(src?{src}:{}),...(fixed?{fixed}:{}),...(cur?{cur}:{}),...(photo?{photo}:{})});
+const clean = ({date,desc,amount,src,fixed,cur,photo,n}) => ({date,desc,amount,...(src?{src}:{}),...(fixed?{fixed}:{}),...(cur?{cur}:{}),...(photo?{photo}:{}),...(n>1?{n}:{})});
 function allRows(){ return tx.concat(transfers, foreign).map(clean); }
 function setData(list, sample, {save=true, keepMonth=false}={}){
   const savedBefore = (typeof goalSaved === 'function' && tx.length + transfers.length) ? goalSaved() : null;
@@ -1417,8 +1427,9 @@ function setData(list, sample, {save=true, keepMonth=false}={}){
   let dup = 0;
   for (const t of list){
     if (!t || !/^\d{4}-\d{2}-\d{2}$/.test(t.date||'') || typeof t.amount !== 'number' || !isFinite(t.amount)) { dup++; continue; }   // unreadable row: skip, never crash
-    const k = t.date+'|'+t.desc+'|'+t.amount.toFixed(2)+'|'+(t.src||'');
-    const k2 = t.date+'|'+t.desc+'|'+t.amount.toFixed(2);   // same row from the same kind of file
+    const nth = t.n > 1 ? '#'+t.n : '';   // the 2nd identical purchase in a statement is its own row
+    const k = t.date+'|'+t.desc+'|'+t.amount.toFixed(2)+nth+'|'+(t.src||'');
+    const k2 = t.date+'|'+t.desc+'|'+t.amount.toFixed(2)+nth;   // same row from the same kind of file
     if (seen.has(k) || (t.src!=='manual' && seen.has(k2))){ dup++; continue; }
     seen.add(k); if (t.src!=='manual') seen.add(k2);
     rows.push({...t, key: merchantKey(t.desc)});
@@ -1462,9 +1473,26 @@ function saveData(){ try { localStorage.setItem(STORE, JSON.stringify({rows: all
 function loadData(){ try { const d = JSON.parse(localStorage.getItem(STORE)||'null'); return d && Array.isArray(d.rows) ? d : null; } catch(e){ return null; } }
 function status(msg, kind){ const el = document.getElementById('status'); el.textContent = msg; el.className = kind||''; if (msg && currentView !== 'home' && typeof toast === 'function') toast(msg.length > 120 ? msg.slice(0,117)+'…' : msg); }
 
+/* The PDF reader (about 300 KB) loads only when someone drops a PDF, pinned to the exact files. */
+const PDF_LIBS = [
+  ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e'],
+  ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js', 'sha384-SnzOobpRMLXZ52iJvZm/C0fYw0OQemTXzTjIsdsfMcrCtCEe9qgzxTd3RSklO5x2'],
+];
+let pdfLib = null;
+function loadScript(src, integrity){
+  return new Promise((ok, bad)=>{ const sc = document.createElement('script'); sc.src = src; sc.integrity = integrity; sc.crossOrigin = 'anonymous'; sc.referrerPolicy = 'no-referrer';
+    sc.onload = ok; sc.onerror = ()=>bad(new Error('the PDF reader did not load (check the internet connection)')); document.head.appendChild(sc); });
+}
+function loadPDF(){
+  if (window.pdfjsLib && window.pdfjsWorker) return Promise.resolve(window.pdfjsLib);
+  if (!pdfLib) pdfLib = (async ()=>{ for (const [src, sri] of PDF_LIBS) await loadScript(src, sri); return window.pdfjsLib; })().catch(e=>{ pdfLib = null; throw e; });
+  return pdfLib;
+}
 async function pdfText(file){
-  if (!window.pdfjsLib) throw new Error('the PDF reader did not load (check the internet connection)');
-  const doc = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise;
+  const lib = await loadPDF();
+  if (!lib) throw new Error('the PDF reader did not load (check the internet connection)');
+  // isEvalSupported:false closes CVE-2024-4367 (a crafted PDF running code through font handling)
+  const doc = await lib.getDocument({data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false}).promise;
   let out = '';
   for (let i=1; i<=Math.min(doc.numPages, MAX_PDF_PAGES); i++){ const c = await (await doc.getPage(i)).getTextContent(); out += c.items.map(it=>it.str + (it.hasEOL ? '\n' : ' ')).join('') + '\n'; }
   return out;
@@ -1543,7 +1571,9 @@ async function importFiles(list, {asExample=false} = {}){
       return `${niceName(merchantKey(b.desc))} ${lei(-b.amount)} ${when}, filed under ${t ? CAT[t.cat].name : 'Other'}`; });
     const nx = transfers.filter(t=>added.includes(t) || added.some(a=>a.date===t.date && a.desc===t.desc && a.amount===t.amount)).length;
     const msg = (bills.length && bills.length===added.length ? '' : '') + (statements ? `Added ${newCount - bills.length} transactions from ${statements} statement${statements===1?'':'s'}. ` : '') + (nx ? `${nx} ${nx===1?'is a transfer':'are transfers'} between your own accounts, not counted as spending or income. ` : '') + (bills.length ? `Bill added: ${billTxt.join('; ')}. ` : '') + (dup ? `Skipped ${dup} duplicate${dup===1?'':'s'}. ` : '') + (bad.length ? `Not imported: ${bad.join('; ')}.` : '');
-    if (statements) navigate('spending');   // the report is the answer to "I uploaded my month": open it straight away
+    if (statements) navigate('spending');
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}   // ask the browser not to clear it
+    keepTip();   // the report is the answer to "I uploaded my month": open it straight away
     if (replace) toast('Your data is in. Your XP stays; your badges start fresh from today.');
     status(msg.trim(), bad.length ? 'err' : 'ok');
     award('import', 30, bills.length && !statements ? 'Bill added' : 'Statements imported');
@@ -1690,7 +1720,7 @@ function behaviourPatterns(rows){
   else if (perWeek <= 2 && small.length) out.push({id:'treats', level:'good', title:'Few small treats', detail:`Only ${f(perWeek)} small treats a week.`});
   // 5. impulse shopping
   const shop = spend.filter(t=>t.cat==='shop'), shopSum = shop.reduce((a,t)=>a-t.amount,0), spent = spend.reduce((a,t)=>a-t.amount,0);
-  if (shop.length && shopSum/spent >= 0.05) out.push({id:'impulse', level:'watch', title:'Impulse buys', monthly: shopSum/nm, detail:`${f(shop.length/nm)} unplanned buys a month, ${lei(shopSum/nm)} a month, ${Math.round(shopSum/spent*100)}% of everything you spend.`});
+  if (shop.length && shopSum/spent >= 0.05) out.push({id:'impulse', level:'watch', title:'Shopping adds up', monthly: shopSum/nm, detail:`${f(shop.length/nm)} shopping buys a month (clothes, gadgets, beauty, marketplaces), ${lei(shopSum/nm)} a month, ${Math.round(shopSum/spent*100)}% of everything you spend.`});
   // 6. subscriptions
   const subs = recurring(spend).filter(r=>r.cat==='subs');
   if (subs.length >= 3) out.push({id:'subs', level:'watch', title:'Subscriptions add up', count: subs.length, cheapest: Math.min(...subs.map(r=>r.avg)), detail:`${subs.length} repeating subscriptions take ${lei(subs.reduce((a,r)=>a+r.avg,0))} a month.`});
@@ -1720,7 +1750,7 @@ function behaviourPatterns(rows){
    "halving" is the stated assumption, never a forecast. Overspending comes first, then the changes worth the most lei. */
 const TIPS = {
   means:   p => `Spend about ${lei(p.monthly)} less a month so more stops going out than comes in.`,
-  impulse: p => `Wait a day before buying things you did not plan. Halving them keeps about ${lei(p.monthly/2)} a month.`,
+  impulse: p => `Wait a day before buying what you did not plan. Spending half as much on shopping keeps about ${lei(p.monthly/2)} a month.`,
   delivery:p => `Cook instead of ordering half the time and keep about ${lei(p.monthly/2)} a month.`,
   treats:  p => `Halve the small treats and keep about ${lei(p.monthly/2)} a month.`,
   subs:    p => `Check your ${p.count} subscriptions. Dropping the cheapest one you do not use keeps ${lei(p.cheapest)} a month.`,
@@ -1869,7 +1899,7 @@ function renderProfile(view, spend, income, spent){
   for (const k of new Set(view.map(t=>monthKey(t.date)))){ const [y,m] = k.split('-').map(Number); for (let d=1; d<=new Date(y,m,0).getDate(); d++){ const dt = new Date(y,m-1,d), v = byDay[toISO(dt)]||0; if (dt.getDay()%6===0){we+=v;nwe++;} else {wd+=v;nwd++;} } }
   const sig = [
     `Small treats under 30 lei: <b>${(small/weeks).toFixed(1)}</b> a week`,
-    shop.length ? `Impulse buys: <b>${(shop.length/months).toFixed(1)}</b> a month, <b>${lei(shop.reduce((a,t)=>a-t.amount,0)/months)}</b>` : null,
+    shop.length ? `Shopping: <b>${(shop.length/months).toFixed(1)}</b> a month, <b>${lei(shop.reduce((a,t)=>a-t.amount,0)/months)}</b>` : null,
     (nwe&&nwd&&wd>0) ? `A weekend day costs <b>${((we/nwe)/(wd/nwd)).toFixed(1)}×</b> a weekday` : null,
     `Days with spending: <b>${Object.keys(byDay).length}</b> of ${nd}`,
   ].filter(Boolean);
@@ -1919,7 +1949,7 @@ function levers(){
   if (per(isDeliv)>0) out.push({id:'delivery', title:'Order delivery half as often', sub:`About ${Math.round(count(isDeliv))} orders a month`, save:per(isDeliv)/2});
   if (per(isRide)>0) out.push({id:'rides', title:'Swap half your taxi rides for metro or bus', sub:`${lei(per(isRide))} a month on rides now`, save:per(isRide)/2});
   const shop = per(t=>t.cat==='shop');
-  if (shop>0) out.push({id:'shop', title:'Wait 48 hours before buying anything unplanned', sub:`${lei(shop)} a month on impulse buys now`, save:shop/2});
+  if (shop>0) out.push({id:'shop', title:'Wait 48 hours before buying anything unplanned', sub:`${lei(shop)} a month on shopping now`, save:shop/2});
   const fun = per(t=>t.cat==='fun');
   if (fun>0) out.push({id:'fun', title:'Spend a quarter less on going out', sub:`${lei(fun)} a month now`, save:fun/4});
   const subs = recurring(spend).filter(r=>r.cat==='subs' && !/ORANGE|VODAFONE|DIGI|TELEKOM/.test(r.key));
@@ -2242,6 +2272,14 @@ function countUp(from, to){
   requestAnimationFrame(step);
 }
 let game = {xp:0, day:'', done:[], awarded:{}, check:{last:'', count:0, best:0}, floor:0};
+/* Safari on iPhone clears a site's data after 7 days without a visit, unless the site is on the Home Screen. */
+function keepTip(){
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent), standalone = navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+  let shown = false; try { shown = localStorage.getItem('spendmap.keeptip') === '1'; } catch(e){}
+  if (!ios || standalone || shown) return;
+  try { localStorage.setItem('spendmap.keeptip', '1'); } catch(e){}
+  setTimeout(()=>showError('', {keep:true}), 1800);
+}
 let reportSeen = false; try { reportSeen = localStorage.getItem('spendmap.report') === '1'; } catch(e){}
 try { const g = JSON.parse(localStorage.getItem('spendmap.game')||'null'); if (g && typeof g==='object') game = Object.assign(game, g); } catch(e){}
 function saveGame(){ try{ localStorage.setItem('spendmap.game', JSON.stringify(game)); }catch(e){} }
@@ -2430,7 +2468,7 @@ function renderFuture(surplus, outAvg){
     const life = [months >= 1 ? `A cushion of <b>${months.toFixed(months < 10 ? 1 : 0)} months</b> of your current living costs` : '',
                   times >= 1 ? `Your ${esc(goal.name || 'goal')}, <b>${times.toFixed(times < 10 ? 1 : 0)} times over</b>` : ''].filter(Boolean).join('<br>');
     return `<div class="fcard"><div class="when">${when}</div><div class="total">${lei(f.total)}</div>
-      <div class="split">You put in ${lei(f.contributed)} · it grew by ${lei(f.growth)}</div>${life ? `<div class="life">${life}</div>` : ''}</div>`;
+      <div class="split">You put in ${lei(f.contributed)} · it grew by ${lei(f.growth)} · before inflation</div>${life ? `<div class="life">${life}</div>` : ''}</div>`;
   };
   $('futureCards').innerHTML = monthly > 0 ? card('You in 5 years', f5) + card('You in 10 years', f10)
     : `<p class="empty">With every habit below, you could be setting aside ${lei(allMonthly)} a month: ${lei(futureValue({monthly: allMonthly, years:10, rate:growthRate}).total)} in 10 years.</p>`;
@@ -2739,7 +2777,9 @@ let userCats = [];
 try { userCats = JSON.parse(localStorage.getItem('spendmap.cats')||'[]') || []; } catch(e){ userCats = []; }
 function setUserCats(list){ userCats = list; applyUserCats(); }   // used by tests
 /* Rebuild the category list from scratch each time: built-in ones, then yours, with "Other" always last. */
+const safeName = v => String(v == null ? '' : v).replace(/[<>&"'`]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24);
 function applyUserCats(){
+  userCats = (Array.isArray(userCats) ? userCats : []).filter(u=>u && /^u[a-z0-9]{1,16}$/.test(String(u.id)) && safeName(u.name)).map(u=>({id:String(u.id), name:safeName(u.name)}));
   const mine = userCats.map((u,i)=>({id:u.id, name:u.name, color:`var(--c${(i % 13) + 1})`, re:null}));
   const other = BASE_CATS.filter(c=>c.id==='other');
   CATS.length = 0; CATS.push(...BASE_CATS.filter(c=>c.id!=='other'), ...mine, ...other);
@@ -2766,9 +2806,29 @@ function applyTheme(){
 
 /* ---------- backup, restore, delete ---------- */
 function backupObject(){ return {app:'spend-map', version:1, savedAt: new Date().toISOString(), rows: allRows(), files, isSample, rules, goal, cats: userCats, balance, paid: paidFlags}; }
-function restoreBackup(o){
-  if (!o || o.app !== 'spend-map' || !Array.isArray(o.rows)) return false;
-  rules = o.rules || {}; saveRules();
+/* A backup is a file from outside: keep only fields of the right shape, so a doctored file cannot inject anything. */
+function cleanBackup(o){
+  const id = v => typeof v === 'string' && /^[a-z][a-z0-9]{0,16}$/.test(v);
+  const rows = (Array.isArray(o.rows) ? o.rows : []).filter(r=>r && /^\d{4}-\d{2}-\d{2}$/.test(r.date) && typeof r.amount === 'number' && isFinite(r.amount)).map(r=>({
+    date: r.date, desc: String(r.desc == null ? '' : r.desc).slice(0, 200), amount: r.amount,
+    ...(typeof r.src === 'string' ? {src: r.src.replace(/[<>&"'`]/g, '').slice(0, 120)} : {}),
+    ...(id(r.fixed) ? {fixed: r.fixed} : {}),
+    ...(typeof r.cur === 'string' && /^[A-Z]{3}$/.test(r.cur) ? {cur: r.cur} : {}),
+    ...(typeof r.photo === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(r.photo) ? {photo: r.photo} : {}),
+    ...(Number.isInteger(r.n) && r.n > 0 ? {n: r.n} : {}),
+  }));
+  const rules = {}; if (o.rules && typeof o.rules === 'object') for (const [k, v] of Object.entries(o.rules)) if (/^[A-Z ]{1,40}$/.test(k) && id(v)) rules[k] = v;
+  const g = o.goal && typeof o.goal === 'object' ? o.goal : null;
+  const goal = g ? {name: safeName(g.name).slice(0, 40) || 'My goal', amount: Math.max(0, +g.amount || 0), date: /^\d{4}-\d{2}$/.test(g.date) ? g.date : '', saved: Math.max(0, +g.saved || 0),
+    ...(id(g.type) ? {type: g.type} : {}), ...(typeof g.icon === 'string' && [...g.icon].length <= 2 && !/[<>&"'`]/.test(g.icon) ? {icon: g.icon} : {})} : null;
+  return {rows, rules, goal, cats: Array.isArray(o.cats) ? o.cats : [], balance: typeof o.balance === 'number' && isFinite(o.balance) ? o.balance : null,
+    paid: o.paid && typeof o.paid === 'object' ? Object.fromEntries(Object.entries(o.paid).filter(([k, v])=>/^[\w |.-]{1,80}$/.test(k) && typeof v === 'boolean')) : {},
+    files: (Array.isArray(o.files) ? o.files : []).map(f=>String(f).replace(/[<>&"'`]/g, '').slice(0, 120)).slice(0, 50), isSample: !!o.isSample, savedAt: typeof o.savedAt === 'string' ? o.savedAt.slice(0, 10) : ''};
+}
+function restoreBackup(raw){
+  if (!raw || raw.app !== 'spend-map' || !Array.isArray(raw.rows)) return false;
+  const o = cleanBackup(raw);
+  rules = o.rules; saveRules();
   if (o.goal) { goal = o.goal; try{ localStorage.setItem('spendmap.goal', JSON.stringify(goal)); }catch(e){} fillGoalForm(); }
   userCats = Array.isArray(o.cats) ? o.cats : []; try{ localStorage.setItem('spendmap.cats', JSON.stringify(userCats)); }catch(e){} applyUserCats();
   balance = typeof o.balance === 'number' ? o.balance : null; try{ localStorage.setItem('spendmap.balance', JSON.stringify(balance)); }catch(e){}
@@ -3206,7 +3266,7 @@ async function scanTag(file){
   msg.textContent = 'Reading the price and the currency…';
   try{
     const T = await loadOCR();
-    const res = await T.recognize(await shrinkForOCR(url, file), 'eng');
+    const res = await T.recognize(await shrinkForOCR(url, file), 'ron+eng');
     const text = res && res.data ? res.data.text : '';
     const r = parsePriceTag(text), shop = tagMerchant(text);
     if (shop && qKind === 'out'){
@@ -3261,7 +3321,7 @@ document.getElementById('bills').addEventListener('change', e=>{
 /* own categories */
 document.getElementById('catForm').addEventListener('submit', e=>{
   e.preventDefault();
-  const inp = document.getElementById('newCat'), name = inp.value.trim().replace(/\s+/g,' ');
+  const inp = document.getElementById('newCat'), name = safeName(inp.value);
   if (!name) return;
   if (CATS.some(c=>c.name.toLowerCase()===name.toLowerCase())){ status(`There is already a category called ${name}.`, 'err'); toast(`There is already a category called ${name}`); return; }
   userCats.push({id: 'u' + Date.now().toString(36), name});
@@ -3295,7 +3355,8 @@ document.getElementById('clear').addEventListener('click', e=>{
   const b = e.currentTarget;
   if (!b.classList.contains('armed')){ b.classList.add('armed'); b.textContent = 'Tap again to delete everything'; clearTimeout(armTimer); armTimer = setTimeout(()=>{ b.classList.remove('armed'); b.textContent = 'Delete my data'; }, 4000); return; }
   clearTimeout(armTimer); b.classList.remove('armed'); b.textContent = 'Delete my data';
-  for (const k of [STORE,'spendmap.rules','spendmap.goal','spendmap.game','spendmap.paid','spendmap.balance','spendmap.cats']) { try{ localStorage.removeItem(k); }catch(err){} }
+  for (const k of [STORE,'spendmap.rules','spendmap.goal','spendmap.game','spendmap.paid','spendmap.balance','spendmap.cats','spendmap.sttw','spendmap.rate','spendmap.report']) { try{ localStorage.removeItem(k); }catch(err){} }
+  sttw = {}; growthRate = 5; reportSeen = false;   // settings (theme, sound, tour, beta note) stay
   rules = {}; paidFlags = {}; balance = null; userCats = []; applyUserCats();
   goal = {name:'Laptop for next semester', amount:4500, date:'2027-06', saved:300}; fillGoalForm();
   game = {xp:0, day:'', done:[], awarded:{}, check:{last:'', count:0, best:0}}; lastXP = null; lastHearts = null;

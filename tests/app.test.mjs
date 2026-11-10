@@ -541,3 +541,44 @@ test('report: good patterns are never listed as things to adjust, and there are 
   assert.equal(app.adjustTips(many).length, 3);
   assert.equal(app.adjustTips([{id:'steady', level:'good', title:'Steady', detail:''}]).length, 0);
 });
+
+// Regression: Cristian's review, 10 Nov 2026 (F9, F10, F11, F14, F15, F16, F17)
+test('amounts: thousands dots with no decimals are thousands', () => {
+  assert.equal(app.parseAmount('2.500'), 2500);
+  assert.equal(app.parseAmount('1.234.567'), 1234567);
+  assert.equal(app.parseAmount('2.500,00'), 2500);
+  assert.equal(app.parseAmount('12.5'), 12.5);
+  assert.equal(app.parseAmount('-49.99'), -49.99);
+});
+test('merchant key: bank wording in front of the shop name is ignored', () => {
+  assert.equal(app.merchantKey('Plata la POS non-BT cu card VISA MEGA IMAGE 0123 BUCURESTI'), 'MEGA IMAGE');
+  assert.equal(app.merchantKey('Plata la POS non-BT cu card VISA LIDL DISCOUNT'), 'LIDL DISCOUNT');
+  assert.equal(app.merchantKey('APPLE PAY ZARA ROMANIA'), 'ZARA ROMANIA');
+  assert.equal(app.merchantKey('CĂMIN STUDENȚESC GRIGORE PREOTEASA'), 'CAMIN STUDENTESC');
+});
+test('categories: Romanian letters, phone payments and bank fees', () => {
+  const cat = desc => app.categorize({ desc, amount: -10, key: app.merchantKey(desc) });
+  assert.equal(cat('ÎNTREȚINERE BLOC 12'), 'rent');
+  assert.equal(cat('APPLE PAY CAFENEA PARTENER'), 'eat');
+  assert.notEqual(cat('GOOGLE PAY MAGAZIN NOU'), 'subs');
+  assert.equal(cat('APPLE.COM/BILL ICLOUD'), 'subs');
+  assert.notEqual(cat('TAXA ADMINISTRARE CONT'), 'school');
+  assert.equal(cat('TAXA DE SCOLARIZARE ASE'), 'school');
+});
+test('two identical purchases in one statement are both kept; the same statement twice is not', () => {
+  const csv = 'Date,Description,Amount\n2026-10-01,5 TO GO,-12.00\n2026-10-01,5 TO GO,-12.00\n2026-10-02,LIDL,-50.00\n';
+  const rows = app.rowsToTx(app.parseCSV(csv)).map(t => ({ ...t, src: 'oct.csv' }));
+  app.setData(rows, false);
+  assert.equal(app.tx.length, 3);
+  const again = app.rowsToTx(app.parseCSV(csv)).map(t => ({ ...t, src: 'oct.csv' }));
+  app.setData(rows.concat(again), false);
+  assert.equal(app.tx.length, 3);
+});
+test('a doctored backup cannot carry markup into the page', () => {
+  const o = app.cleanBackup({ app: 'spend-map', rows: [{ date: '2026-10-01', desc: 'X', amount: -1, cur: '<img src=x onerror=alert(1)>', fixed: '"><script>', photo: 'javascript:alert(1)' }],
+    rules: { 'LIDL': 'food', 'BAD': '<b>' }, cats: [{ id: 'u1', name: '<img src=x onerror=alert(1)>' }], goal: { name: '<script>x</script>', amount: 100 } });
+  assert.equal(o.rows[0].cur, undefined); assert.equal(o.rows[0].fixed, undefined); assert.equal(o.rows[0].photo, undefined);
+  assert.deepEqual({ ...o.rules }, { LIDL: 'food' });
+  assert.ok(!/[<>]/.test(o.goal.name));
+  assert.ok(!/[<>"']/.test(app.safeName('<img src=x onerror=alert(1)>')));
+});
