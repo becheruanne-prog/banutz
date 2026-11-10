@@ -52,7 +52,11 @@ header p{margin:6px 0 0;max-width:60ch;color:var(--muted)}
 .drop .hint{font-size:.85rem;color:var(--muted);margin-top:2px}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
 .vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
-.errbar{background:var(--warn);color:var(--bg);padding:10px 14px;border-radius:9px;font-size:.9rem;font-weight:600}
+.errbar{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:80;width:min(560px,calc(100% - 32px));display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--surface);color:var(--ink);border:3px solid var(--warn);padding:12px 14px;border-radius:16px;font-size:.92rem;box-shadow:0 6px 0 var(--shadow)}
+.errbar[hidden]{display:none}
+.errbar p{margin:0;flex:1 1 220px;line-height:1.45}
+.errbar .err-ic{font-size:1.6rem}
+.errbar .err-act{display:flex;gap:10px;align-items:center}
 .btn{display:inline-flex;align-items:center;}
 button,.btn{font:inherit;cursor:pointer;border-radius:9px;padding:9px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:600;font-size:.88rem}
 button:hover,.btn:hover{border-color:var(--accent)}
@@ -687,6 +691,27 @@ a.brand:hover{color:color-mix(in srgb,var(--grape) 80%,var(--ink))}
 .board-wrap{background-color:color-mix(in srgb,var(--land,#F4F1FF) 70%,var(--surface)) !important;transition:background-color .4s}
 
 /* the example data is always labelled as such */
+.report{border:3px solid var(--accent);}
+.report .rep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 28px}
+.report h3{margin:0 0 6px;font-size:1.05rem}
+.report .rep-lead{margin:0 0 10px;line-height:1.5}
+.rep-cats{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.rep-cats li{display:grid;grid-template-columns:12px 1fr auto 3.2em;align-items:center;gap:8px}
+.rep-cats .dot{width:12px;height:12px;border-radius:50%}
+.rep-cats .muted{text-align:right}
+.rep-tips{margin:0;padding-left:1.3em;display:grid;gap:8px;line-height:1.45}
+.rep-ok{margin:0;line-height:1.5}
+.rep-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.help-btn{font-weight:900;font-size:1.15rem;color:var(--accent)}
+.tour{position:fixed;inset:0;z-index:200}
+.tour-ring{position:fixed;border-radius:18px;box-shadow:0 0 0 4px var(--gold),0 0 0 9999px rgba(10,10,40,.55);transition:all .3s ease;pointer-events:none}
+.tour-card{position:fixed;left:50%;transform:translateX(-50%);width:min(380px,calc(100% - 32px));background:var(--surface);color:var(--ink);border-radius:20px;padding:16px 18px;box-shadow:0 6px 0 var(--shadow),0 18px 40px rgba(0,0,0,.25);transition:top .3s ease}
+.tour-card h2{margin:6px 0 4px;font-size:1.2rem}
+.tour-card p{margin:0 0 12px;line-height:1.5}
+.tour-top{display:flex;align-items:center;gap:10px}
+.tour-btns{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tour-btns .btn{min-height:44px}
+@media (prefers-reduced-motion:reduce){.tour-ring,.tour-card{transition:none}}
 .sample-note{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--p-sky);color:var(--ink);border-radius:16px;padding:12px 16px;margin:12px 0 0}
 .sample-note p{margin:0;flex:1 1 260px;font-size:.92rem;line-height:1.45}
 
@@ -843,7 +868,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
   </aside>
 
   <main class="wrap">
-    <div id="err" class="errbar" role="alert" hidden></div>
+    <div id="err" class="errbar" role="alert" hidden><span class="err-ic" aria-hidden="true">😿</span><p id="errMsg"></p><span class="err-act"><button type="button" class="btn" id="errReload">Reload</button><button type="button" class="link" id="errClose">Close</button></span></div>
     <header class="band" id="band" data-view="home">
       <div class="band-top">
         <div class="band-title">
@@ -856,6 +881,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
           <span class="chip-g" id="hHearts" title="Budget hearts this week"></span>
           <span class="chip-g" id="hXP" title="XP"></span>
           <button type="button" class="chip-g theme-btn" id="themeBtn" aria-label="Theme: follows your device"></button>
+          <button type="button" class="chip-g theme-btn help-btn" id="tourBtn" aria-label="Show me around">?</button>
           <button type="button" class="chip-g theme-btn" id="soundBtn" aria-pressed="false" aria-label="Sound effects off. Turn on"></button>
         </div>
       </div>
@@ -867,11 +893,10 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <button type="button" class="cta" id="cta">Start today's quests</button>
       </div>
     </header>
-    <div class="sample-note" id="sampleNote" role="note" hidden><span class="new-pill">Example</span><p><b>You are looking at example data:</b> an invented student, so you can see how Banutz works. Add your own bank statement, a bill or a photo of a price tag, and Banutz switches to <b>your data only</b> and does all its maths on it.</p><button type="button" class="btn primary" id="sampleOwn">Use my own data</button></div>
+    <div class="sample-note" id="sampleNote" role="note" hidden><span class="new-pill">Example</span><p><b>You are looking at example data:</b> an invented student, so you can see how Banutz works. Add your own bank statement, a bill or a photo of a price tag, and Banutz switches to <b>your data only</b> and does all its maths on it.</p><button type="button" class="btn primary" id="sampleOwn">Upload my bank statement</button></div>
 
     <!-- HOME: the simple first screen -->
     <section class="view" data-view="home">
-      <div class="new-banner" id="newScan" hidden><span class="new-pill">New</span><p><b>Scan a price tag.</b> Take a photo of the label in the shop and Banutz fills in the purchase for you. The photo never leaves your phone.</p><button type="button" class="btn primary" id="newScanTry">Try it</button><button type="button" class="link" id="newScanClose" aria-label="Hide this message">Hide</button></div>
 
       <section id="drop" class="drop" aria-label="Add statements and bills">
         <div class="drop-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="9" y="5" width="30" height="38" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/><path d="M24 31V17m-6 6 6-6 6 6" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -890,6 +915,8 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         </div>
         <div id="status" role="status"></div>
       </section>
+
+      <div class="new-banner" id="newScan" hidden><span class="new-pill">New</span><p><b>Scan a price tag.</b> Take a photo of the label in the shop and Banutz fills in the purchase for you. The photo never leaves your phone.</p><button type="button" class="btn primary" id="newScanTry">Try it</button><button type="button" class="link" id="newScanClose" aria-label="Hide this message">Hide</button></div>
 
       <section class="panel story" id="story" aria-label="Your money story"></section>
 
@@ -921,6 +948,10 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <!-- SPENDING -->
     <section class="view" data-view="spending" hidden>
       <nav class="months" id="months" aria-label="Choose period"></nav>
+      <section class="panel report" id="reportPanel" aria-labelledby="reportTitle">
+        <div class="panel-head"><h2 id="reportTitle">Your report</h2><span class="label" id="reportSrc"></span></div>
+        <div id="reportBody"></div>
+      </section>
       <nav class="jump" aria-label="Your money story steps">
         <button type="button" data-to="sortPanel">1 · Sorted</button>
         <button type="button" data-to="patternsPanel">2 · Patterns</button>
@@ -933,6 +964,19 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <div class="panel-head"><h2>Step 1 · Sorted</h2><span class="label" id="sortLabel"></span></div>
         <div id="sortBody"></div>
       </section>
+    <div class="grid2">
+      <section class="panel">
+        <div class="panel-head"><h2>Where it goes</h2><span class="label">By category</span></div>
+        <div class="where">
+          <div class="pie" id="pie"></div>
+          <div class="cats" id="cats"></div>
+        </div>
+      </section>
+      <section class="panel" id="patternsPanel">
+        <div class="panel-head"><h2>Step 2 · Your patterns</h2><span class="label">From all your data</span></div>
+        <ul class="insights" id="insights"></ul>
+      </section>
+    </div>
     <section class="panel profile" id="profilePanel" aria-label="Spender profile">
       <div class="panel-head"><h2>Step 3 · What kind of spender are you?</h2><span class="label">What you do, and what you say</span></div>
       <div class="label">What you do: the 50/30/20 check</div>
@@ -948,19 +992,6 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
       <div class="quiz" id="quiz"></div>
       <p class="fine">50/30/20 is the Balanced Money Formula of Elizabeth Warren and Amelia Warren Tyagi (<i>All Your Worth</i>, 2005): up to 50% of income on needs, up to 30% on wants, at least 20% saved. It is published advice, not a scientific test. Needs here are rent, utilities, groceries, fuel, transport, health, pet, school and phone; wants are eating out, going out, impulse buys and other subscriptions. <button type="button" class="link" data-to="methodPanel">How this works</button></p>
     </section>
-    <div class="grid2">
-      <section class="panel">
-        <div class="panel-head"><h2>Where it goes</h2><span class="label">By category</span></div>
-        <div class="where">
-          <div class="pie" id="pie"></div>
-          <div class="cats" id="cats"></div>
-        </div>
-      </section>
-      <section class="panel" id="patternsPanel">
-        <div class="panel-head"><h2>Step 2 · Your patterns</h2><span class="label">From all your data</span></div>
-        <ul class="insights" id="insights"></ul>
-      </section>
-    </div>
     <section class="panel">
       <div class="panel-head"><h2>Monthly breakdown</h2><span class="label">Lei per category, every month</span></div>
       <div class="tablebox" id="breakdown"></div>
@@ -1138,12 +1169,25 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <div id="rain" aria-hidden="true"></div>
     <footer><a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
   </main>
+    <div id="tour" class="tour" hidden><div class="tour-ring" id="tourRing"></div><div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" tabindex="-1"><div class="tour-top"><span class="label" id="tourStep"></span></div><h2 id="tourTitle"></h2><p id="tourText"></p><div class="tour-btns"><button type="button" class="link" id="tourSkip">Skip the tour</button><span><button type="button" class="btn" id="tourBack">Back</button> <button type="button" class="btn primary" id="tourNext">Next</button></span></div></div></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 <script>
 /* Show any script failure on the page instead of failing silently. */
-function showError(msg){ const e = document.getElementById('err'); if (e){ e.hidden = false; e.textContent = 'Something broke: ' + msg + '. Take a screenshot of this line and send it over.'; } }
+/* Students get a plain message, never a silent failure: what broke, that their data is safe, and what to do. */
+function showError(msg, {offline=false} = {}){
+  const e = document.getElementById('err'), m = document.getElementById('errMsg'); if (!e || !m) return;
+  m.innerHTML = offline
+    ? '<b>You are offline.</b> Banutz still works with what is on this phone. Scanning a price tag and reading PDF bills need the internet.'
+    : '<b>Oops, this part is broken.</b> ' + String(msg).replace(/^(Uncaught\s+)?(\w*Error:\s*)?/,'').replace(/[<>&]/g, '') + '. Your data is safe on this device. Reload the page and try again; if it keeps happening, tell us on GitHub.';
+  e.hidden = false;
+}
+document.addEventListener('click', ev=>{ const t = ev.target; if (!t || !t.closest) return;
+  if (t.closest('#errClose')) document.getElementById('err').hidden = true;
+  if (t.closest('#errReload')) location.reload(); });
+window.addEventListener('offline', ()=>showError('', {offline:true}));
+window.addEventListener('online', ()=>{ const e = document.getElementById('err'); if (e && /offline/.test(e.textContent)) e.hidden = true; });
 window.addEventListener('error', e => showError(e.message || 'unknown error'));
 window.addEventListener('unhandledrejection', e => { if (e.reason && e.reason.name === 'AbortError') return; showError((e.reason && e.reason.message) || String(e.reason)); });
 /* Order matters: the first matching rule wins (e.g. "BOLT FOOD" is eating out before "BOLT" is transport). */
@@ -1395,7 +1439,7 @@ function billFromText(text, name){
 }
 
 const MAX_FILE_MB = 15, MAX_PDF_PAGES = 20;
-async function importFiles(list){
+async function importFiles(list, {asExample=false} = {}){
   const all = [...list];
   if (!all.length) return;
   const added = [], bad = [], bills = [];
@@ -1421,11 +1465,11 @@ async function importFiles(list){
   }
   if (added.length){
     // Your own data replaces the example data: statements and bills alike, so the two never mix.
-    const replace = isSample;
+    const replace = isSample || asExample;
     const base = replace ? [] : allRows();
     if (replace) files = files.filter(n=>all.some(f=>f.name===n));
     const before = base.length;
-    const dup = setData(base.concat(added), replace ? false : isSample);
+    const dup = setData(base.concat(added), asExample || (replace ? false : isSample));
     const newCount = tx.length + transfers.length - before;
     const billTxt = bills.map(b=>{
       const t = tx.find(x=>x.date===b.date && x.desc===b.desc), when = b.noDate ? 'with no readable date (dated today, change it if needed)' : `on ${+b.date.slice(8)} ${MONTHS_EN[+b.date.slice(5,7)-1]}`;
@@ -1433,6 +1477,7 @@ async function importFiles(list){
       return `${niceName(merchantKey(b.desc))} ${lei(-b.amount)} ${when}, filed under ${t ? CAT[t.cat].name : 'Other'}`; });
     const nx = transfers.filter(t=>added.includes(t) || added.some(a=>a.date===t.date && a.desc===t.desc && a.amount===t.amount)).length;
     const msg = (bills.length && bills.length===added.length ? '' : '') + (statements ? `Added ${newCount - bills.length} transactions from ${statements} statement${statements===1?'':'s'}. ` : '') + (nx ? `${nx} ${nx===1?'is a transfer':'are transfers'} between your own accounts, not counted as spending or income. ` : '') + (bills.length ? `Bill added: ${billTxt.join('; ')}. ` : '') + (dup ? `Skipped ${dup} duplicate${dup===1?'':'s'}. ` : '') + (bad.length ? `Not imported: ${bad.join('; ')}.` : '');
+    if (statements) navigate('spending');   // the report is the answer to "I uploaded my month": open it straight away
     status(msg.trim(), bad.length ? 'err' : 'ok');
     award('import', 30, bills.length && !statements ? 'Bill added' : 'Statements imported');
   } else status('Nothing imported. ' + bad.join('; ') + '.', 'err');
@@ -1514,11 +1559,12 @@ function render(){
     <td class="r num ${t.amount>0?'pos':''}">${t.amount>0?'+':'−'}${Math.abs(t.amount).toFixed(2)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">No transactions.</td></tr>';
   document.getElementById('txCount').textContent = `${view.length} transaction${view.length===1?'':'s'}` + (xView.length ? ` · ${xView.length} own transfer${xView.length===1?'':'s'}` : '') + (fView.length ? ` · ${fView.length} in other currencies` : '');
   const more = document.getElementById('more'); more.hidden = showAll || rowsAll.length<=40; more.textContent = `Show all ${rowsAll.length}`;
+  renderReport(view, spent, income, cats, byCat);
   renderProfile(view, spend, income, spent);
   renderSort();
   renderHome(view, spent, income, cats, byCat);
   renderAhead();
-  setSub('spending', view.length ? `Where your money went · ${month==='all' ? `all ${months.length} months` : monthLabel(month)}` : 'Add a statement to see where your money goes.');
+  setSub('spending', view.length ? `Where your money went · ${month!=='all' ? monthLabel(month) : months.length===1 ? monthLabel(months[0]) : `all ${months.length} months`}` : 'Add a statement to see where your money goes.');
   renderBreakdown();
   renderGoal();
   renderGame();
@@ -1570,17 +1616,17 @@ function behaviourPatterns(rows){
   }
   // 4. small treats
   const small = spend.filter(t=>WANT(t) && -t.amount < 30), perWeek = small.length/weeks;
-  if (perWeek > 5) out.push({id:'treats', level:'watch', title:'Many small treats', detail:`${f(perWeek)} small treats a week under 30 lei, ${lei(small.reduce((a,t)=>a-t.amount,0)/nm)} a month together.`});
+  if (perWeek > 5) out.push({id:'treats', level:'watch', title:'Many small treats', monthly: small.reduce((a,t)=>a-t.amount,0)/nm, detail:`${f(perWeek)} small treats a week under 30 lei, ${lei(small.reduce((a,t)=>a-t.amount,0)/nm)} a month together.`});
   else if (perWeek <= 2 && small.length) out.push({id:'treats', level:'good', title:'Few small treats', detail:`Only ${f(perWeek)} small treats a week.`});
   // 5. impulse shopping
   const shop = spend.filter(t=>t.cat==='shop'), shopSum = shop.reduce((a,t)=>a-t.amount,0), spent = spend.reduce((a,t)=>a-t.amount,0);
-  if (shop.length && shopSum/spent >= 0.05) out.push({id:'impulse', level:'watch', title:'Impulse buys', detail:`${f(shop.length/nm)} unplanned buys a month, ${lei(shopSum/nm)} a month, ${Math.round(shopSum/spent*100)}% of everything you spend.`});
+  if (shop.length && shopSum/spent >= 0.05) out.push({id:'impulse', level:'watch', title:'Impulse buys', monthly: shopSum/nm, detail:`${f(shop.length/nm)} unplanned buys a month, ${lei(shopSum/nm)} a month, ${Math.round(shopSum/spent*100)}% of everything you spend.`});
   // 6. subscriptions
   const subs = recurring(spend).filter(r=>r.cat==='subs');
-  if (subs.length >= 3) out.push({id:'subs', level:'watch', title:'Subscriptions add up', detail:`${subs.length} repeating subscriptions take ${lei(subs.reduce((a,r)=>a+r.avg,0))} a month.`});
+  if (subs.length >= 3) out.push({id:'subs', level:'watch', title:'Subscriptions add up', count: subs.length, cheapest: Math.min(...subs.map(r=>r.avg)), detail:`${subs.length} repeating subscriptions take ${lei(subs.reduce((a,r)=>a+r.avg,0))} a month.`});
   // 7. food delivery
   const deliv = spend.filter(t=>/GLOVO|TAZZ|BOLT FOOD|FOODPANDA/i.test(t.desc));
-  if (deliv.length/weeks > 1) out.push({id:'delivery', level:'watch', title:'Delivery habit', detail:`${f(deliv.length/weeks)} food deliveries a week, about ${lei(deliv.reduce((a,t)=>a-t.amount,0)/deliv.length)} each.`});
+  if (deliv.length/weeks > 1) out.push({id:'delivery', level:'watch', title:'Delivery habit', monthly: deliv.reduce((a,t)=>a-t.amount,0)/nm, detail:`${f(deliv.length/weeks)} food deliveries a week, about ${lei(deliv.reduce((a,t)=>a-t.amount,0)/deliv.length)} each.`});
   // 8. steady or bursty, week to week
   const wk = {}; for (const d of days){ const x = fromISO(d), m = new Date(x); m.setDate(x.getDate()-((x.getDay()+6)%7)); wk[toISO(m)] = (wk[toISO(m)]||0) + v(d); }
   const wv = Object.values(wk); if (wv.length >= 6){
@@ -1592,11 +1638,58 @@ function behaviourPatterns(rows){
   const income = inc.reduce((a,t)=>a+t.amount,0);
   if (income > 0){
     const r = spent/income;
-    if (r > 1) out.push({id:'means', level:'watch', title:'Spending more than comes in', detail:`For every 100 lei that comes in, ${Math.round(r*100)} lei go out.`});
+    if (r > 1) out.push({id:'means', level:'watch', title:'Spending more than comes in', monthly: (spent-income)/nm, detail:`For every 100 lei that comes in, ${Math.round(r*100)} lei go out.`});
     else if (r <= 0.8) out.push({id:'means', level:'good', title:'Living within your means', detail:`You keep ${Math.round((1-r)*100)} lei of every 100 that come in.`});
   }
   const rank = {watch:0, info:1, good:2};
   return out.sort((a,b)=>rank[a.level]-rank[b.level]);
+}
+
+/* ---------- your report: what to adjust ----------
+   Turns the "watch" patterns into one concrete change each. Amounts come only from the person's own payments;
+   "halving" is the stated assumption, never a forecast. Overspending comes first, then the changes worth the most lei. */
+const TIPS = {
+  means:   p => `Spend about ${lei(p.monthly)} less a month so more stops going out than comes in.`,
+  impulse: p => `Wait a day before buying things you did not plan. Halving them keeps about ${lei(p.monthly/2)} a month.`,
+  delivery:p => `Cook instead of ordering half the time and keep about ${lei(p.monthly/2)} a month.`,
+  treats:  p => `Halve the small treats and keep about ${lei(p.monthly/2)} a month.`,
+  subs:    p => `Check your ${p.count} subscriptions. Dropping the cheapest one you do not use keeps ${lei(p.cheapest)} a month.`,
+  payday:  () => `When money arrives, move your saving out first, then spend what is left.`,
+  squeeze: () => `Split the month's money into four weekly amounts so the last week is not tight.`,
+  weekend: () => `Decide on Friday how much the weekend can cost.`,
+  steady:  () => `Put a little aside every week for the expensive ones.`,
+};
+function adjustTips(patterns, max = 3){
+  const worth = p => p.id === 'means' ? Infinity : (p.monthly || 0) / (p.id === 'means' ? 1 : 2) || (p.cheapest || 0);
+  return patterns.filter(p=>p.level==='watch')
+    .map(p=>({id:p.id, title:p.title, worth:worth(p), tip: p.id==='squeeze' && /spike/i.test(p.title) ? 'Plan the big buys earlier, so the last week of the month does not spike.' : (TIPS[p.id] ? TIPS[p.id](p) : p.detail)}))
+    .sort((a,b)=>b.worth-a.worth)
+    .slice(0, max);
+}
+function renderReport(view, spent, income, cats, byCat){
+  const body = document.getElementById('reportBody'), src = document.getElementById('reportSrc');
+  if (!body) return;
+  const months = [...new Set(view.map(t=>monthKey(t.date)))].sort();
+  const period = !months.length ? '' : months.length===1 ? monthLabel(months[0]) : `${monthLabel(months[0])} to ${monthLabel(months[months.length-1])}`;
+  src.textContent = isSample ? 'Example data · an invented student' : files.length ? `Your data · ${files.length===1 ? files[0] : files.length+' files'}` : 'Your data · added by you';
+  if (!view.length){
+    body.innerHTML = `<p class="rep-lead">Upload your bank statement and Banutz writes your report: how you spend and what to adjust.</p><label class="btn primary" for="file">Upload my bank statement</label>`;
+    return;
+  }
+  const left = income - spent;
+  const how = `In ${period} you spent <b class="num">${lei(spent)}</b>` + (income > 0 ? ` and <b class="num">${lei(income)}</b> came in, so <b class="num ${left>=0?'pos':'neg'}">${lei(Math.abs(left))}</b> ${left>=0?'was left over':'more went out than came in'}.` : '. No money coming in shows in this period.');
+  const top = cats.slice(0,3).map(c=>`<li><span class="dot" style="background:${c.color}"></span><span>${c.name}</span><b class="num">${lei(byCat[c.id])}</b><span class="muted num">${Math.round(byCat[c.id]/spent*100)}%</span></li>`).join('');
+  const tips = adjustTips(lastPatterns);
+  const goods = lastPatterns.filter(p=>p.level==='good').slice(0,1);
+  const adjust = tips.length
+    ? `<ol class="rep-tips">${tips.map(t=>`<li><b>${t.title}.</b> ${t.tip}</li>`).join('')}</ol>`
+    : `<p class="rep-ok">Nothing big to fix right now.${goods.length ? ` ${goods[0].title}: ${goods[0].detail}` : ''}</p>`;
+  body.innerHTML = `
+    <div class="rep-grid">
+      <div class="rep-part"><h3>How you spend</h3><p class="rep-lead">${how}</p>${top ? `<div class="label">Where most of it goes</div><ul class="rep-cats">${top}</ul>` : ''}</div>
+      <div class="rep-part"><h3>What to adjust</h3>${adjust}</div>
+    </div>
+    <div class="rep-actions"><button type="button" class="btn" data-to="patternsPanel">See all your patterns</button><a class="btn" href="#goal" data-go="goal">Turn a saving into a goal</a></div>`;
 }
 
 /* ---------- step 3: the Spendthrift-Tightwad scale (Rick, Cryder & Loewenstein, 2008) ---------- */
@@ -2158,7 +2251,7 @@ function renderGame(){
   const atRisk = !doneToday && game.check.count > 0 && game.check.last === toISO(yest);
   setSub('home', !s ? 'Add your first statement to start.' : doneToday ? `Streak safe: ${game.check.count} day${game.check.count===1?'':'s'}. See you tomorrow.` : atRisk ? `Your ${game.check.count}-day streak is at risk. Finish today's quests to keep it.` : 'Finish today\u2019s 4 quests to start a streak.');
   setSub('progress', s ? `${got.length} of ${B.length} badges · Level ${li+1}, ${lname}` : 'Add your data to start earning badges.');
-  const cta = $('cta'); cta.textContent = game.done.length === QUESTS.length ? 'See your badges' : game.done.length ? 'Continue quests' : 'Start today\u2019s quests'; cta.classList.toggle('done', game.done.length === QUESTS.length);
+  const cta = $('cta'); cta.textContent = isSample ? 'Upload my bank statement' : game.done.length === QUESTS.length ? 'See your badges' : game.done.length ? 'Continue quests' : 'Start today\u2019s quests'; cta.classList.toggle('done', game.done.length === QUESTS.length);
   const overspending = tx.filter(t=>t.amount<0).reduce((a,t)=>a-t.amount,0) > tx.filter(t=>t.amount>0).reduce((a,t)=>a+t.amount,0);
   const dm = !s ? 'supportive' : game.done.length===QUESTS.length ? 'smile' : s.hearts<=1 ? 'sad' : overspending ? 'worried' : s.streak>=3 ? 'youcan' : s.streak===0 ? 'supportive' : 'grumpy';
   setMood(dm); dayMood = MOOD_OF[dm] || dm; updateBuddy();
@@ -2745,6 +2838,7 @@ document.getElementById('quiz').addEventListener('click', e=>{
   else document.querySelectorAll(`#quiz button[data-k="${b.dataset.k}"]`).forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
 });
 document.querySelector('.jump').addEventListener('click', e=>{ const b = e.target.closest('button[data-to]'); if (b) goTo('spending', b.dataset.to); });
+document.getElementById('reportPanel').addEventListener('click', e=>{ const b = e.target.closest('button[data-to]'); if (b) goTo('spending', b.dataset.to); });
 document.getElementById('profilePanel').addEventListener('click', e=>{ const b = e.target.closest('button[data-to]'); if (b) goTo('spending', b.dataset.to); });
 document.getElementById('skip').addEventListener('click', e=>{ e.preventDefault(); document.getElementById('viewTitle').focus(); });
 /* the step bar on Spending now shows which step you are reading */
@@ -2761,6 +2855,7 @@ window.addEventListener('scroll', ()=>{ if (!spyTick){ spyTick = true; requestAn
 document.getElementById('story').addEventListener('click', e=>{ const b = e.target.closest('button[data-to]'); if (b) goTo(b.dataset.view, b.dataset.to); });
 
 document.getElementById('cta').addEventListener('click', ()=>{
+  if (isSample){ file.click(); return; }
   if (game.done.length === QUESTS.length){ navigate('progress'); return; }
   moodPulse('youcan');
   const qp = document.getElementById('questPanel'); qp.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'center'});
@@ -2775,10 +2870,10 @@ document.addEventListener('drop',e=>{ e.preventDefault(); drop.classList.remove(
 /* Three invented bank exports in three different real-world formats, run through the same import as dropped files. */
 const SAMPLE_FILES = __SAMPLE_FILES__; // filled in by scripts/build.mjs from samples/*.csv
 document.getElementById('trySample').onclick = () => {
-  files = []; isSample = true;   // replace whatever is loaded
-  importFiles(Object.entries(SAMPLE_FILES).map(([name, text]) => new File([text], name, {type:'text/csv'})));
+  files = []; isSample = true;   // replace whatever is loaded; invented files stay labelled as example data
+  importFiles(Object.entries(SAMPLE_FILES).map(([name, text]) => new File([text], name, {type:'text/csv'})), {asExample:true});
 };
-document.getElementById('sampleOwn').addEventListener('click', ()=>{ navigate('home'); setTimeout(()=>{ const d = document.getElementById('drop') || document.getElementById('file'); if (d && d.scrollIntoView) d.scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block:'center'}); document.getElementById('file').click(); }, 350); });
+document.getElementById('sampleOwn').addEventListener('click', ()=>file.click());   // straight to the file picker: the report opens once the statement is read
 document.getElementById('useSample').onclick = () => { files = []; setData(sampleData(), true); status('Example data loaded: 3 months of invented student spending.', 'ok'); };
 
 /* quick add */
@@ -2842,7 +2937,7 @@ let dayMood = 'grumpy';
 const GOOD_MOODS = ['happy','cheer','youcan'], LOW_MOODS = ['sad','broke','stop'];
 const FORWARD_VIEWS = ['goal','future','invest','progress'];
 const BUDDY_LINES = {
-  spending:{grumpy:'Hmm. Let us see where it all went.', sad:'Only a few hearts left. Go easy today.', broke:'Today ran over. Tomorrow is a new page.', stop:'Noooo! Check that last one.', supportive:'Add a statement and I will sort it for you.', youcan:'Look at that streak. Keep it going!', happy:'Under budget today. Proud of you!', cheer:'Look at you go!'},
+  spending:{grumpy:'Hmm. Let us see where it all went.', sad:'Only a few hearts left. Go easy today.', broke:'More went out than came in. Your report shows what to adjust.', stop:'Noooo! Check that last one.', supportive:'Add a statement and I will sort it for you.', youcan:'Look at that streak. Keep it going!', happy:'Under budget today. Proud of you!', cheer:'Look at you go!'},
   goal:{low:'Every 🦁 you put here is for future you.', mid:'One step at a time. You are on the trail.', good:'Look how far you have come!'},
   future:{low:'Today is one day. Your habits are the long game.', mid:'Small changes now, big numbers later.', good:'Future you is cheering right now!'},
   invest:{low:'Saving comes first, growing comes next.', mid:'Learn first, then let your money work.', good:'Ready to grow? This is where it starts.'},
@@ -2933,7 +3028,7 @@ function loadOCR(){
     const sc = document.createElement('script');
     sc.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
     sc.onload = ()=> window.Tesseract ? ok(window.Tesseract) : bad(new Error('no reader'));
-    sc.onerror = ()=>{ ocrLib = null; bad(new Error('the text reader did not load (check the internet connection)')); };
+    sc.onerror = ()=>{ ocrLib = null; showError('The price-tag reader did not load, so scanning is off for now. Check the internet, or type the price yourself'); bad(new Error('the text reader did not load (check the internet connection)')); };
     document.head.appendChild(sc);
   });
   return ocrLib;
@@ -3082,6 +3177,65 @@ fillGoalForm();
 document.getElementById('mascot').innerHTML = catSVG();
 applyTheme();
 applySound();
+/* ---------- guided tour: one short pop-up per main section ----------
+   Runs once for a new visitor, and again from the ? button. Each step opens its screen, rings the part it explains,
+   and says in one or two lines what it is for. */
+const TOUR = [
+  {view:'home', sel:'#drop', title:'1. Start here: your bank statement', text:'In your banking app, export last month as a CSV file and drop it here. Banutz reads it on this phone; nothing is uploaded.'},
+  {view:'spending', sel:'#reportPanel', title:'2. Your report', text:'Right after the upload you land here: how you spent your money and the three changes worth the most lei.'},
+  {view:'spending', sel:'.jump', title:'3. Go deeper', text:'Fix a category, read your patterns, and take the 1-minute quiz to find your spender type.'},
+  {view:'spending', sel:'#fab', title:'4. Add a purchase', text:'Paid cash or about to buy something? Tap + to add it, or scan the price tag in the shop.'},
+  {view:'future', sel:'.nav a[data-v="future"]', title:'5. Future You', text:'See what your habits grow into in 5 and 10 years if you keep a little aside every month.'},
+  {view:'goal', sel:'.nav a[data-v="goal"]', title:'6. Your goal', text:'Tell Banutz what you are saving for. It draws a map with one step a month until you get there.'},
+  {view:'progress', sel:'.nav a[data-v="progress"]', title:'7. Badges and XP', text:'Good money days earn XP, streaks and badges. That is the whole game: save to grow.'},
+];
+let tourAt = -1;
+function tourVisible(el){ return el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; }
+function placeTour(){
+  if (tourAt < 0) return;
+  const st = TOUR[tourAt], el = [...document.querySelectorAll(st.sel)].find(tourVisible);
+  const ring = document.getElementById('tourRing'), card = document.getElementById('tourCard');
+  if (!el){ ring.style.cssText = 'left:50%;top:50%;width:0;height:0'; card.style.top = '30%'; return; }
+  const r = el.getBoundingClientRect(), pad = 6;
+  // on phones the tab bar sits at the bottom: keep the card above it
+  const nav = document.querySelector('.nav'), nr = nav && nav.getBoundingClientRect();
+  const floor = nr && nr.top > innerHeight/2 && !el.closest('.nav') ? nr.top : innerHeight;
+  const top = Math.max(4, r.top - pad), h = Math.min(r.height + pad*2, innerHeight - top - 4);
+  ring.style.cssText = `left:${r.left-pad}px;top:${top}px;width:${r.width+pad*2}px;height:${h}px`;
+  const ch = card.offsetHeight || 200, bottomLimit = (el.closest('.nav') && nr && nr.top > innerHeight/2 ? nr.top : floor) - 12;
+  const below = top + h + 12, above = top - ch - 12;
+  card.style.top = (below + ch <= bottomLimit ? below : above >= 12 ? above : Math.max(12, bottomLimit - ch)) + 'px';
+}
+function showTour(i){
+  if (i < 0 || i >= TOUR.length){ endTour(); return; }
+  tourAt = i; const st = TOUR[i];
+  document.getElementById('tour').hidden = false;
+  document.getElementById('tourStep').textContent = `${i+1} of ${TOUR.length}`;
+  document.getElementById('tourTitle').textContent = st.title;
+  document.getElementById('tourText').textContent = st.text;
+  document.getElementById('tourBack').hidden = i === 0;
+  document.getElementById('tourNext').textContent = i === TOUR.length-1 ? 'Let’s go' : 'Next';
+  if (currentView !== st.view) navigate(st.view);
+  setTimeout(()=>{
+    const el = [...document.querySelectorAll(st.sel)].find(tourVisible);
+    if (el && !el.closest('.nav') && el.id !== 'fab'){ el.scrollIntoView({block:'start', behavior:'auto'}); window.scrollBy(0, -16); }
+    placeTour(); document.getElementById('tourCard').focus({preventScroll:true});
+  }, 380);
+  if (typeof sfx === 'function') try { sfx('tap'); } catch(e){}
+}
+function endTour(){
+  tourAt = -1; document.getElementById('tour').hidden = true;
+  try { localStorage.setItem('spendmap.tour', 'done'); } catch(e){}
+  navigate('home');
+}
+document.getElementById('tourBtn').addEventListener('click', ()=>showTour(0));
+document.getElementById('tourNext').addEventListener('click', ()=>showTour(tourAt+1));
+document.getElementById('tourBack').addEventListener('click', ()=>showTour(tourAt-1));
+document.getElementById('tourSkip').addEventListener('click', endTour);
+document.addEventListener('keydown', e=>{ if (tourAt < 0) return; if (e.key==='Escape') endTour(); else if (e.key==='ArrowRight') showTour(tourAt+1); else if (e.key==='ArrowLeft') showTour(tourAt-1); });
+addEventListener('resize', placeTour); addEventListener('scroll', placeTour, {passive:true});
+(function firstVisitTour(){ let seen = null; try { seen = localStorage.getItem('spendmap.tour'); } catch(e){ seen = 'done'; }
+  if (!seen && isSample && !/[?&]notour\b/.test(location.search)) setTimeout(()=>{ if (tourAt < 0) showTour(0); }, 1400); })();
 setTimeout(()=>{ if (GOOD_MOODS.includes(dayMood)) walkOn('happy'); }, 12000 + Math.random()*20000);   // a surprise stroll, once per visit, only on a good day
 { const saved = loadData();
   if (saved){ files = saved.files || []; setData(saved.rows, !!saved.isSample, {save:false}); }

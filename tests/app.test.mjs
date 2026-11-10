@@ -489,7 +489,7 @@ test('cat mood: future screens never show sadness or grumpiness', () => {
 });
 test('cat mood: every screen has an encouraging line on a bad day', () => {
   for (const v of ['goal','future','invest','progress']) assert.ok(app.buddyLine(v, 'broke').length > 10);
-  assert.match(app.buddyLine('spending', 'broke'), /new page/);
+  assert.match(app.buddyLine('spending', 'broke'), /report/);   // an over-budget day points to the report, not a shrug
 });
 test('receipt: the TOTAL line wins over item prices, subtotal and cash given', () => {
   const r = app.parsePriceTag('MEGA IMAGE\nLapte 1L 7,49\nPaine 4,99\nSUBTOTAL 12,48\nTOTAL 12,48 LEI\nNUMERAR 20,00\nREST 7,52');
@@ -521,4 +521,23 @@ test('goal map: the goal name suggests its map', () => {
   assert.equal(app.guessGoalType('Fond de rezerva'), 'cushion');
   assert.equal(app.guessGoalType('Concert tickets'), 'other');
   assert.ok(Object.keys(app.GOAL_TYPES).length === 8);
+});
+
+// Regression: ISSUE-001 — uploading a statement gave no report on what to adjust
+// Found by /qa on 2026-11-10
+test('report: what to adjust puts overspending first, then the change worth the most lei', () => {
+  const tips = app.adjustTips([
+    {id:'delivery', level:'watch', title:'Delivery habit', monthly:260, detail:''},
+    {id:'impulse', level:'watch', title:'Impulse buys', monthly:575, detail:''},
+    {id:'means', level:'watch', title:'Spending more than comes in', monthly:635, detail:''},
+    {id:'weekend', level:'good', title:'Calm weekends', detail:''},
+  ]);
+  assert.deepEqual(tips.map(t=>t.id), ['means','impulse','delivery']);
+  assert.match(tips[0].tip, /635/);
+  assert.match(tips[1].tip, /288|287/);   // halving 575 lei a month
+});
+test('report: good patterns are never listed as things to adjust, and there are at most three', () => {
+  const many = ['payday','squeeze','weekend','treats','subs'].map(id=>({id, level:'watch', title:id, monthly:100, count:3, cheapest:20, detail:''}));
+  assert.equal(app.adjustTips(many).length, 3);
+  assert.equal(app.adjustTips([{id:'steady', level:'good', title:'Steady', detail:''}]).length, 0);
 });
