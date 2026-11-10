@@ -75,3 +75,5 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 
 46. „Adaugă o funcție de poză: când cineva vrea să adauge o cumpărătură, face o poză etichetei și produsului, iar prețul se completează singur. De exemplu, la Zara fac o poză etichetei.”
 47. „Să fie anunțată în aplicație ca funcție nouă și urcată în repo.”
+48. „Pisica să fie prezentă pe tot site-ul, nu doar pe prima pagină, cu starea zilei. Dar nu poate fi tristă la obiectiv sau la investiții, acolo e despre viitor. Într-o zi bună, pune pisica peste tot, să-i încurajeze.”
+49. „Când atingi un prag sau pui bani deoparte, fă-o mai festivă: să plouă cu pisici, câini și bani, cu efect sonor.”
