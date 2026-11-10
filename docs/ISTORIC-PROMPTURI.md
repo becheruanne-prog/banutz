@@ -95,3 +95,4 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 65. „Are sens un disclaimer pentru cei care intră pe site, că e work in progress? Nu vreau să promit lucruri pe care nu le avem încă.”
 66. „Pe telefon, scoate insignele: flacăra, inima, fulgerul și tabul Badges.”
 67. „Aplicația să fie fluidă, logică și, cel mai important, funcțională. Apoi lucrăm la monetizare.”
+68. „Iată review-ul lui Cristian: securitate, cifre greșite, date care se pierd, UX. Rezolvă-le.”
