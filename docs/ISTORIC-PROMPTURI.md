@@ -70,3 +70,8 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 43. „Primul A din nume să fie o monedă. Hai să vedem variante de logo.”
 44. „Varianta cu moneda și A-ul mare e ok, dar păstrează fontul de acum.”
 45. „Adaugă «Be an Investor» în meniul din stânga, ca funcție nouă care urmează.”
+
+## 7. Funcții noi
+
+46. „Adaugă o funcție de poză: când cineva vrea să adauge o cumpărătură, face o poză etichetei și produsului, iar prețul se completează singur. De exemplu, la Zara fac o poză etichetei.”
+47. „Să fie anunțată în aplicație ca funcție nouă și urcată în repo.”
