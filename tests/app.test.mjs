@@ -491,3 +491,11 @@ test('cat mood: every screen has an encouraging line on a bad day', () => {
   for (const v of ['goal','future','invest','progress']) assert.ok(app.buddyLine(v, 'broke').length > 10);
   assert.match(app.buddyLine('spending', 'broke'), /new page/);
 });
+test('receipt: the TOTAL line wins over item prices, subtotal and cash given', () => {
+  const r = app.parsePriceTag('MEGA IMAGE\nLapte 1L 7,49\nPaine 4,99\nSUBTOTAL 12,48\nTOTAL 12,48 LEI\nNUMERAR 20,00\nREST 7,52');
+  assert.equal(r.amount, 12.48);
+  assert.equal(r.receipt, true);
+});
+test('price tag: the currency is reported with the amount', () => {
+  assert.equal(app.parsePriceTag('RON 129,90\nEUR 25,95').currency, 'RON');
+});
