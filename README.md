@@ -5,6 +5,7 @@ Banutz is a gamified budgeting app for students, named after its grumpy cat masc
 Everything runs in the browser. Files are read on the device and never uploaded.
 
 - **Website:** https://becheruanne-prog.github.io/banutz/ (sample files to drag in: [samples/](samples/))
+- **Prompt history (Romanian):** every prompt that built this app, in order: [docs/ISTORIC-PROMPTURI.md](docs/ISTORIC-PROMPTURI.md)
 - **Open source:** MIT licence. Fork it, change it, send a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Local:** `npm run build && npm run serve`, then open http://localhost:8791
 
