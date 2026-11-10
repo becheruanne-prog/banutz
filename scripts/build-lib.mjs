@@ -30,7 +30,7 @@ export function csp(page) {
     "default-src 'self'",
     `script-src 'self' ${hashes.join(' ')} https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'wasm-unsafe-eval'`,
     "worker-src 'self' blob: https://cdn.jsdelivr.net",
-    "connect-src 'self' blob: data: https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://fonts.googleapis.com https://fonts.gstatic.com",
+    "connect-src 'self' blob: data: https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://fonts.googleapis.com https://fonts.gstatic.com https://assets.mailerlite.com",
     "manifest-src 'self'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src https://fonts.gstatic.com",

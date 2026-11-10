@@ -915,6 +915,32 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
 .beta-note[hidden]{display:none}
 .beta-note p{margin:0;flex:1 1 240px;line-height:1.45}
 .beta-note .link{min-height:44px;padding:0 8px}
+
+/* report traits + premium */
+.rep-traits{margin-top:14px} .rep-traits h3{margin:0 0 8px;font-size:1.05rem}
+.rep-traits ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.rep-traits li{border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9rem;background:var(--surface)}
+.rep-traits li.t-good{border-color:color-mix(in srgb,var(--good) 55%,var(--line))} .rep-traits li.t-good span{color:var(--good)}
+.rep-traits li.t-type{border-color:var(--accent)} .rep-traits li.t-quiz{border-style:dashed}
+.rep-premium{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--accent-soft,#ECE7FD);color:var(--ink)}
+.rep-premium p{margin:0;flex:1 1 240px;line-height:1.45}
+.goal-premium{margin:0 0 4px}
+.soon-pill{display:inline-block;font-size:.72rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--on-accent,#fff);border-radius:999px;padding:3px 10px}
+.sheet-back{position:fixed;inset:0;z-index:150;background:rgba(10,10,40,.5);display:grid;place-items:end center;padding:0}
+.sheet-back[hidden]{display:none}
+.premium-sheet{position:relative;width:min(560px,100%);max-height:92vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;outline:none}
+@media (min-width:700px){.sheet-back{place-items:center;padding:16px}.premium-sheet{border-radius:22px}}
+.premium-sheet h2{margin:2px 0 0;font-size:1.6rem}
+.sheet-x{position:absolute;right:12px;top:10px;width:44px;height:44px;border-radius:50%;font-size:1.6rem;line-height:1;padding:0}
+.prem-lead{margin:0;line-height:1.5}
+.prem-list{list-style:none;margin:4px 0;padding:0;display:grid;gap:12px}
+.prem-list li{display:grid;grid-template-columns:30px 1fr;gap:10px;line-height:1.45} .prem-list li span{font-size:1.4rem}
+.prem-price{margin:2px 0;padding:10px 12px;border-radius:12px;border:2px dashed var(--line);line-height:1.45}
+.prem-form{display:grid;gap:10px} .prem-form input[type=email]{font:inherit;padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);min-height:48px}
+.prem-form .chk{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;line-height:1.4;font-size:.92rem}
+.prem-form .chk input{width:22px;height:22px;margin:0}
+.prem-msg{margin:0;font-weight:700;min-height:1.2em} .prem-fine{margin:0;font-size:.82rem;color:var(--muted)}
+.prem-off{margin:0;padding:10px 12px;border-radius:12px;background:var(--bg)}
 </style>
 
 <a class="skip" href="#home" id="skip">Skip to the screen</a>
@@ -1106,6 +1132,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
 
     <!-- GOAL -->
     <section class="view" data-view="goal" hidden>
+      <div class="rep-premium goal-premium"><span class="soon-pill">Premium · coming soon</span><p><b>Reach this goal with a plan.</b> Premium turns your habits into weekly steps with check-ins, so you can see if you are on track for your date.</p><button type="button" class="btn" data-premium>See Premium</button></div>
       <p class="mantra">We don't save out of fear or scarcity, and not just to survive. We save <b>with a goal in mind</b>: small changes to today's habits that make us better spenders now and better investors later.</p>
       <section class="panel goal-chat" id="goalChat" aria-label="Pick your goal">
         <div class="chat-row"><div class="cat chat-cat" id="chatCat" data-mood="supportive" aria-hidden="true"></div>
@@ -1228,6 +1255,29 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
       </form>
     </dialog>
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <div class="sheet-back" id="premium" hidden><div class="sheet premium-sheet" role="dialog" aria-modal="true" aria-labelledby="premTitle" tabindex="-1">
+      <button type="button" class="sheet-x" id="premClose" aria-label="Close">×</button>
+      <span class="soon-pill">Coming soon</span>
+      <h2 id="premTitle">Banutz Premium</h2>
+      <p class="prem-lead">The free report shows where your money goes. Premium helps you change it, month after month, until you reach your goal.</p>
+      <ul class="prem-list">
+        <li><span aria-hidden="true">🗓️</span><div><b>A habit plan to your goal</b><br>Pick 2 or 3 habits from your report. Banutz turns them into weekly steps with check-ins and shows if you are on track for your goal date.</div></li>
+        <li><span aria-hidden="true">🔔</span><div><b>Monthly check-ins</b><br>A reminder when it is time to add next month's statement, with how last month went.</div></li>
+        <li><span aria-hidden="true">📈</span><div><b>Your trends over the year</b><br>What got better, what crept up, and your best saving month.</div></li>
+        <li><span aria-hidden="true">🔒</span><div><b>Your history on every device</b><br>Phone and laptop in sync, encrypted on your phone so not even we can read it.</div></li>
+      </ul>
+      <p class="prem-price"><b>No price yet.</b> Banutz is free while in beta. Join the waitlist and you will hear the student price first.</p>
+      <form id="premForm" class="prem-form" novalidate>
+        <label for="premEmail">Your email</label>
+        <input id="premEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
+        <label class="chk"><input type="checkbox" id="premAge" required> I am 16 or older</label>
+        <label class="chk"><input type="checkbox" id="premOk" required> Email me when Premium opens, and now and then with Banutz news. I can unsubscribe at any time.</label>
+        <button type="submit" class="btn primary" id="premSend">Join the waitlist</button>
+        <p class="prem-msg" id="premMsg" role="status" aria-live="polite"></p>
+        <p class="prem-fine">We keep only your email, never your statements. Under 16? Ask a parent to join for you. <a href="privacy.html">Privacy</a></p>
+      </form>
+      <p class="prem-off" id="premOff" hidden>The waitlist opens in a few days. Come back soon, or follow the project on <a href="https://github.com/becheruanne-prog/banutz">GitHub</a>.</p>
+    </div></div>
     <div id="chipTip" class="chip-tip" role="dialog" aria-labelledby="chipTipT" hidden><b id="chipTipT"></b><p id="chipTipP"></p><button type="button" class="link" id="chipTipX">Got it</button></div>
     <div id="confetti" aria-hidden="true"></div>
     <div id="rain" aria-hidden="true"></div>
@@ -1738,7 +1788,7 @@ function behaviourPatterns(rows){
   const income = inc.reduce((a,t)=>a+t.amount,0);
   if (income > 0){
     const r = spent/income;
-    if (r > 1) out.push({id:'means', level:'watch', title:'Spending more than comes in', monthly: (spent-income)/nm, detail:`For every 100 lei that comes in, ${Math.round(r*100)} lei go out.`});
+    if (r > 1) out.push({id:'means', level:'watch', title:'Spending more than comes in', monthly: (spent-income)/months.length, detail:`For every 100 lei that comes in, ${Math.round(r*100)} lei go out.`});
     else if (r <= 0.8) out.push({id:'means', level:'good', title:'Living within your means', detail:`You keep ${Math.round((1-r)*100)} lei of every 100 that come in.`});
   }
   const rank = {watch:0, info:1, good:2};
@@ -1803,6 +1853,42 @@ function printReport(){
   award('report', 20, 'Report downloaded');
   setTimeout(()=>window.print(), 50);
 }
+/* Premium waitlist: MailerLite embedded form. Fill in the two ids to switch the form on. */
+const WAITLIST = {account: '', form: ''};
+const waitlistOn = () => !!(WAITLIST.account && WAITLIST.form);
+function openPremium(){
+  const b = document.getElementById('premium'); if (!b) return;
+  if (b.parentElement !== document.body) document.body.appendChild(b);   // above the tab bar, outside the page's stacking
+  document.getElementById('premForm').hidden = !waitlistOn(); document.getElementById('premOff').hidden = waitlistOn();
+  b.hidden = false; b.querySelector('.sheet').focus({preventScroll:true});
+  let done = false; try { done = localStorage.getItem('spendmap.waitlist') === '1'; } catch(e){}
+  if (done){ document.getElementById('premMsg').textContent = 'You are on the waitlist. We will email you when Premium opens.'; }
+}
+function closePremium(){ const b = document.getElementById('premium'); if (b) b.hidden = true; }
+document.addEventListener('click', e=>{
+  if (e.target.closest && e.target.closest('[data-premium]')){ openPremium(); return; }
+  if (e.target.id === 'premium' || (e.target.closest && e.target.closest('#premClose'))) closePremium();
+});
+document.addEventListener('keydown', e=>{ if (e.key === 'Escape') closePremium(); });
+document.getElementById('premForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const msg = document.getElementById('premMsg'), email = document.getElementById('premEmail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ msg.textContent = 'Please check your email address.'; document.getElementById('premEmail').focus(); return; }
+  if (!document.getElementById('premAge').checked){ msg.textContent = 'Premium emails are for people 16 or older. Under 16? Ask a parent to join for you.'; return; }
+  if (!document.getElementById('premOk').checked){ msg.textContent = 'Tick the second box so we are allowed to email you.'; return; }
+  const btn = document.getElementById('premSend'); btn.disabled = true; msg.textContent = 'Joining…';
+  try {
+    const fd = new FormData(); fd.append('fields[email]', email); fd.append('ml-submit', '1'); fd.append('anticsrf', 'true');
+    const r = await fetch(`https://assets.mailerlite.com/jsonp/${WAITLIST.account}/forms/${WAITLIST.form}/subscribe`, {method:'POST', body: fd});
+    const j = await r.json().catch(()=>({}));
+    if (!r.ok || j.success === false) throw new Error('not accepted');
+    try { localStorage.setItem('spendmap.waitlist', '1'); } catch(err){}
+    msg.textContent = 'You are on the waitlist. Check your inbox to confirm your email.'; e.target.reset();
+    if (typeof sfx === 'function') try { sfx('kaching'); } catch(err){}
+  } catch(err){
+    msg.textContent = 'Oops, that did not go through. Check your connection and try again.';
+  } finally { btn.disabled = false; }
+});
 function renderReport(view, spent, income, cats, byCat){
   const body = document.getElementById('reportBody'), src = document.getElementById('reportSrc');
   if (!body) return;
@@ -1818,6 +1904,11 @@ function renderReport(view, spent, income, cats, byCat){
   const top = cats.slice(0,3).map(c=>`<li><span class="dot" style="background:${c.color}"></span><span>${c.name}</span><b class="num">${lei(byCat[c.id])}</b><span class="muted num">${Math.round(byCat[c.id]/spent*100)}%</span></li>`).join('');
   const tips = adjustTips(lastPatterns);
   const goods = lastPatterns.filter(p=>p.level==='good').slice(0,1);
+  const qType = sttwType(sttwScore(sttw));
+  const traits = (lastPatterns.length || qType) ? `<div class="rep-traits"><h3>How you behave with money</h3><ul>
+      ${qType ? `<li class="t-type"><b>${STTW_TEXT[qType].name}</b> ${STTW_TEXT[qType].plain.toLowerCase()}</li>` : `<li class="t-quiz"><button type="button" class="link" data-to="profilePanel">Take the 1-minute quiz</button> to see your spender type</li>`}
+      ${lastPatterns.map(p=>`<li class="${p.level==='good'?'t-good':'t-watch'}"><span aria-hidden="true">${p.level==='good'?'✓':'•'}</span> ${p.title}<span class="vh">${p.level==='good'?' (going well)':' (worth watching)'}</span></li>`).join('')}
+    </ul></div>` : '';
   const adjust = tips.length
     ? `<ol class="rep-tips">${tips.map(t=>`<li><b>${t.title}.</b> ${t.tip}</li>`).join('')}</ol>`
     : `<p class="rep-ok">Nothing big to fix right now.${goods.length ? ` ${goods[0].title}: ${goods[0].detail}` : ''}</p>`;
@@ -1826,6 +1917,8 @@ function renderReport(view, spent, income, cats, byCat){
       <div class="rep-part"><h3>How you spend</h3><p class="rep-lead">${how}</p>${top ? `<div class="label">Where most of it goes</div><ul class="rep-cats">${top}</ul>` : ''}</div>
       <div class="rep-part"><h3>What to adjust</h3>${adjust}</div>
     </div>
+    ${traits}
+    ${isSample ? '' : `<div class="rep-premium"><span class="soon-pill">Premium · coming soon</span><p><b>Turn this report into new habits.</b> A habit plan to your goal, monthly check-ins, your trends over the year and your history on every device.</p><button type="button" class="btn" data-premium>See Premium</button></div>`}
     <div class="rep-actions"><button type="button" class="btn primary" id="repPrint">Download my report (PDF)</button><button type="button" class="btn" data-to="patternsPanel">See all your patterns</button><a class="btn" href="#goal" data-go="goal">Turn a saving into a goal</a></div>`;
 }
 
