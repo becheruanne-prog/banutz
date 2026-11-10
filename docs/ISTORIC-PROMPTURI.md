@@ -1,6 +1,6 @@
 # Istoricul prompturilor: cum a fost construit Banutz
 
-Acestea sunt mesajele pe care Anne le-a scris lui Claude Code, în ordine, de la prima idee până la aplicația de azi. Au fost scrise în engleză și sunt traduse aici în română, ușor scurtate. Am lăsat deoparte doar mesajele pur tehnice („dă-mi linkul”, „stai”, erori lipite din terminal).
+Acestea sunt mesajele de dezvoltare a produsului pe care Anne le-a scris lui Claude Code, în ordine, de la prima idee până la aplicația de azi. Au fost scrise în engleză și sunt traduse aici în română, ușor scurtate. Am lăsat deoparte mesajele despre publicare, găzduire și organizare, ca și pe cele pur tehnice („dă-mi linkul”, „stai”, erori lipite din terminal).
 
 Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversație: descrii ce vrei, Claude Code construiește, tu verifici și ceri mai departe.
 
@@ -33,51 +33,40 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 15. „Aplică stilul de gamificare Duolingo acestei aplicații.”
 16. „Fă-o ca un joc și simplifică primul ecran. Vreau să fie ușor de navigat și interactivă.”
 17. „Caută în skill-urile mele de design UI și UX și alege-le pe cele mai potrivite. Păstrează direcția gamificată, cât mai fluidă și atractivă. O vor folosi studenți, deci trebuie să fie distractivă, captivantă și foarte colorată.”
-18. „Finalizează designul.”
-19. „Vreau ca zona de obiectiv să fie un joc, ca o hartă sau ca Monopoly. Cu bară de progres, notificări și efecte sonore.”
-20. „Am nevoie și de o mascotă care merge și e amuzantă. Poate o pisică, dar una morocănoasă. Când economisești, să se audă «ding dong»; când cheltui prea mult, să se uite în buzunar.”
-21. „Îmi plac culorile pastel, dar păstrează contrastul dintre text și fundal.”
-22. „Fă mascota moale, rotunjită și finisată, ca o jucărie de pluș.”
-23. „Arată-mi stările lui Banutz: fericit, trist, susținător, «poți!», «stai așa!».”
-24. „Testul nu e destul de clar. «Echilibrat»: ce înseamnă, de fapt?”
+18. „Aplică skill-urile de design UI și UX pe care le avem salvate, înainte să mergem mai departe.”
+19. „Finalizează designul.”
+20. „Vreau ca zona de obiectiv să fie un joc, ca o hartă sau ca Monopoly. Cu bară de progres, notificări și efecte sonore.”
+21. „Am nevoie și de o mascotă care merge și e amuzantă. Poate o pisică, dar una morocănoasă. Când economisești, să se audă «ding dong»; când cheltui prea mult, să se uite în buzunar.”
+22. „Îmi plac culorile pastel, dar păstrează contrastul dintre text și fundal.”
+23. „Fă mascota moale, rotunjită și finisată, ca o jucărie de pluș.”
+24. „Arată-mi stările lui Banutz: fericit, trist, susținător, «poți!», «stai așa!».”
+25. „Testul nu e destul de clar. «Echilibrat»: ce înseamnă, de fapt?”
 
 ## 4. Logica, sursele și datele
 
-25. „Testează logica aplicației.”
-26. „Ce ar trebui să verific ca aplicația să fie mai bună, mai prietenoasă, să arate excelent și să fie funcțională? Poate merge chiar dacă rulează local?”
-27. „Am primit ieri o întrebare: e funcțională de-adevăratelea? Va merge cu utilizator și parolă? Cum ar funcționa login-ul?”
-28. „Uite o aplicație de buget din magazin. Ia de acolo funcții, fluxuri și idei despre drumul utilizatorului.” Apoi: „Hai să implementăm ce fac ei bine.”
-29. „Hai să facem un experiment: ia două sau trei facturi reale de pe laptopul meu și analizează tranzacțiile. Vreau să mă asigur că studenții primesc rezultate relevante.”
-30. „Aplicația să pună singură fiecare cheltuială într-o categorie. Unele nu le va recunoaște, dar categoriile să se adapteze tranzacțiilor. Apoi o analiză a tiparelor de comportament. Profilul să se bazeze pe cadrele psihometrice cele mai cunoscute. Apoi proiecția: tu peste 5 și peste 10 ani.”
-31. „Asigură-te că logica profilului e corectă, testată și folosită deja de alte aplicații. Nu inventată, nu halucinată. Și fă navigarea impecabilă.”
-32. „Zona de obiectiv să calculeze singură ce pun deoparte în zona de cheltuieli.”
+26. „Testează logica aplicației.”
+27. „Ce ar trebui să verific ca aplicația să fie mai bună, mai prietenoasă, să arate excelent și să fie funcțională? Poate merge chiar dacă rulează local?”
+28. „Am primit ieri o întrebare: e funcțională de-adevăratelea? Va merge cu utilizator și parolă? Cum ar funcționa login-ul?”
+29. „Uite o aplicație de buget din magazin. Ia de acolo funcții, fluxuri și idei despre drumul utilizatorului.” Apoi: „Hai să implementăm ce fac ei bine.”
+30. „Hai să facem un experiment: ia două sau trei facturi reale de pe laptopul meu și analizează tranzacțiile. Vreau să mă asigur că studenții primesc rezultate relevante.”
+31. „Aplicația să pună singură fiecare cheltuială într-o categorie. Unele nu le va recunoaște, dar categoriile să se adapteze tranzacțiilor. Apoi o analiză a tiparelor de comportament. Profilul să se bazeze pe cadrele psihometrice cele mai cunoscute. Apoi proiecția: tu peste 5 și peste 10 ani.”
+32. „Asigură-te că logica profilului e corectă, testată și folosită deja de alte aplicații. Nu inventată, nu halucinată. Și fă navigarea impecabilă.”
+33. „Zona de obiectiv să calculeze singură ce pun deoparte în zona de cheltuieli.”
 
 ## 5. Mesajul și viitorul
 
-33. „Economisim ca să creștem, nu doar ca să economisim. Ăsta să fie mesajul principal.”
-34. „Mantra aplicației: nu economisim pentru că iubim lipsa, ci ca să devenim cheltuitori mai buni azi și investitori mai buni mai târziu. Vreau să le dau și o perspectivă despre investiții.”
-35. „«Nu acționa niciodată din lipsă» să fie unul dintre mesajele principale. Și: «Cum cheltui, așa trăiești. Deciziile mici de azi sunt viața ta de mâine.»”
-36. „Hai să alegem întâi mesajele și identitatea. Apoi versiunea în română, care trebuie să sune natural. Tagline: «Save to Grow».”
-37. „Vreau să le dau speranță: o proiecție pe 5 sau 10 ani, dacă obiceiurile sunt bune. Vreau legătura dintre acțiunile mici de zi cu zi și cum vor trăi.”
-38. „Tu în 5 și 10 ani să fie o secțiune separată, în meniul din stânga. Să-i spunem «Future You».”
-39. „«Spending now» în loc de «Spending».”
-40. „Aici trebuie să pot alege între cele două scenarii, ilustrate cu doi copaci sau doi săculeți cu bani.”
+34. „Economisim ca să creștem, nu doar ca să economisim. Ăsta să fie mesajul principal.”
+35. „Mantra aplicației: nu economisim pentru că iubim lipsa, ci ca să devenim cheltuitori mai buni azi și investitori mai buni mai târziu. Vreau să le dau și o perspectivă despre investiții.”
+36. „«Nu acționa niciodată din lipsă» să fie unul dintre mesajele principale. Și: «Cum cheltui, așa trăiești. Deciziile mici de azi sunt viața ta de mâine.»”
+37. „Hai să alegem întâi mesajele și identitatea. Apoi versiunea în română, care trebuie să sune natural. Tagline: «Save to Grow».”
+38. „Vreau să le dau speranță: o proiecție pe 5 sau 10 ani, dacă obiceiurile sunt bune. Vreau legătura dintre acțiunile mici de zi cu zi și cum vor trăi.”
+39. „Tu în 5 și 10 ani să fie o secțiune separată, în meniul din stânga. Să-i spunem «Future You».”
+40. „«Spending now» în loc de «Spending».”
+41. „Aici trebuie să pot alege între cele două scenarii, ilustrate cu doi copaci sau doi săculeți cu bani.”
 
 ## 6. Numele și logoul
 
-41. „Pisica se numește Banutz. Numește aplicația Banutz.”
-42. „Primul A din nume să fie o monedă. Hai să vedem variante de logo.”
-43. „Varianta cu moneda și A-ul mare e ok, dar păstrează fontul de acum.”
-44. „Adaugă «Be an Investor» în meniul din stânga, ca funcție nouă care urmează.”
-
-## 7. Publicare, prezentare și echipă
-
-45. „Urcă-l într-un repo privat. Dar vreau să-l împart și cu studenții printr-un link. Înainte, asigură-te că-l pot actualiza în continuare de aici, din terminal.”
-46. „Fă o listă pentru studenți, în română, cu ordinea prompturilor care au dus la rezultatul ăsta, uneltele folosite și logica psihometrică din spate.”
-47. „Ai aplicat skill-urile de UI/UX pe care le avem salvate? Dacă nu, aplică-le înainte de prezentare.”
-48. „Fă o prezentare cu toate ecranele. Vreau două repo-uri: unul privat pentru mine și unul open source pentru studenți. Și o listă de unelte și skill-uri.”
-49. „Prezentarea în română, pe limba de zi cu zi, cu o notă că e tradusă în mare parte din engleză. Un ghid de utilizare și prompturile care au dus la aplicație, ca să nu le mai fie frică de terminal.”
-50. „Prezentarea să răspundă: e funcțională? Ce urmează? Unde se poate publica, ce e un VPS, cum o găzduim și cum ar putea face bani.”
-51. „Pune-o pe serverul meu, vizibilă deocamdată pentru o singură persoană.”
-52. „Studenții trimit pull request-uri, eu le aprob. Explică-le ce e GitHub și de ce e nevoie de aprobare.”
-53. „Vreau și istoricul prompturilor pentru ei.”
+42. „Pisica se numește Banutz. Numește aplicația Banutz.”
+43. „Primul A din nume să fie o monedă. Hai să vedem variante de logo.”
+44. „Varianta cu moneda și A-ul mare e ok, dar păstrează fontul de acum.”
+45. „Adaugă «Be an Investor» în meniul din stânga, ca funcție nouă care urmează.”
