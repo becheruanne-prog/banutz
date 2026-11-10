@@ -77,3 +77,7 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 47. „Să fie anunțată în aplicație ca funcție nouă și urcată în repo.”
 48. „Pisica să fie prezentă pe tot site-ul, nu doar pe prima pagină, cu starea zilei. Dar nu poate fi tristă la obiectiv sau la investiții, acolo e despre viitor. Într-o zi bună, pune pisica peste tot, să-i încurajeze.”
 49. „Când atingi un prag sau pui bani deoparte, fă-o mai festivă: să plouă cu pisici, câini și bani, cu efect sonor.”
+50. „Majoritatea studenților o vor folosi pe telefon: optimizează totul pentru mobil, cu skill-urile de UI/UX. Să fie fluidă, frumoasă, distractivă, cu efecte sonore, mai ales la scanare.”
+51. „Scanarea trebuie să citească prețul și moneda. Dacă nu poate citi, utilizatorul să poată scrie prețul, cu poza alături.”
+52. „Pisica ce traversează ecranul e mereu supărată, e enervant. Să apară mai rar.”
+53. „Zona de obiectiv să fie personalizabilă: harta să fie definită de obiectivul fiecăruia, nu fixă. Și să-i invite pe utilizatori: «Hei, ai un obiectiv?»”
