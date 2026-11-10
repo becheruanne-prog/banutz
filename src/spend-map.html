@@ -893,12 +893,34 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
 .sttw-scale .bar i{position:absolute;top:-5px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--accent);border:3px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .sttw-scale .you{position:absolute;bottom:-20px;transform:translateX(-50%);font-size:.78rem;font-weight:900;white-space:nowrap}
 
+
+/* ---- calm pass (10 Nov 2026): one accent; red = over, green = good, yellow = new ---- */
+.view .tiles .tile:nth-child(n){background:var(--surface);border-color:var(--line)}
+.fab{background:var(--accent);color:var(--on-accent,#fff);box-shadow:0 5px 0 color-mix(in srgb,var(--accent) 55%,#000)}
+.sample-note{background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--accent)}
+.home-grid:empty{display:none}
+/* phones: the essentials only */
+@media (max-width:900px){
+  #hStreak,#hHearts,#hXP,#chipTip{display:none !important}
+  .nav a[data-v="progress"]{display:none}
+}
+/* before the first upload */
+.is-sample #story,.is-sample #homeSnap,.is-sample .jump,.is-sample #sortPanel,.is-sample #profilePanel,
+.is-sample #aheadPanel,.is-sample #billsPanel,.is-sample #breakdownPanel,.is-sample #weeklyPanel,.is-sample #topPanel,
+.is-sample #recurringPanel,.is-sample #txPanel{display:none}
+/* beta */
+.beta-pill{display:inline-block;font-style:normal;font-size:.7rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-soft,#ECE7FD);color:var(--accent);border-radius:999px;padding:2px 8px;vertical-align:middle}
+.brand-beta{margin-left:6px;font-size:.62rem;vertical-align:4px}
+.beta-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-size:.9rem}
+.beta-note[hidden]{display:none}
+.beta-note p{margin:0;flex:1 1 240px;line-height:1.45}
+.beta-note .link{min-height:44px;padding:0 8px}
 </style>
 
 <a class="skip" href="#home" id="skip">Skip to the screen</a>
 <div class="app">
   <aside class="side">
-    <a class="brand" translate="no" href="#home" data-v="home" aria-label="Banutz, go to Home">b<svg class="coin-a" viewBox="0 0 60 60" aria-hidden="true" focusable="false"><defs><radialGradient id="bzCoin" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF4B8"/><stop offset=".55" stop-color="#FFC93C"/><stop offset="1" stop-color="#E09A00"/></radialGradient></defs><circle cx="30" cy="30" r="27" fill="url(#bzCoin)" stroke="#C98A00" stroke-width="2.6"/><circle cx="30" cy="30" r="18.4" fill="none" stroke="#C98A00" stroke-width="1.8" opacity=".65"/><ellipse cx="20.5" cy="19.2" rx="5.4" ry="3.2" fill="#fff" opacity=".85" transform="rotate(-30 20.5 19.2)"/><text x="30" y="40" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="29" fill="#9A6400">A</text></svg>nutz<span class="tagline">Save to grow.</span></a>
+    <a class="brand" translate="no" href="#home" data-v="home" aria-label="Banutz, go to Home">b<svg class="coin-a" viewBox="0 0 60 60" aria-hidden="true" focusable="false"><defs><radialGradient id="bzCoin" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF4B8"/><stop offset=".55" stop-color="#FFC93C"/><stop offset="1" stop-color="#E09A00"/></radialGradient></defs><circle cx="30" cy="30" r="27" fill="url(#bzCoin)" stroke="#C98A00" stroke-width="2.6"/><circle cx="30" cy="30" r="18.4" fill="none" stroke="#C98A00" stroke-width="1.8" opacity=".65"/><ellipse cx="20.5" cy="19.2" rx="5.4" ry="3.2" fill="#fff" opacity=".85" transform="rotate(-30 20.5 19.2)"/><text x="30" y="40" text-anchor="middle" font-family="Nunito,system-ui,sans-serif" font-weight="900" font-size="29" fill="#9A6400">A</text></svg>nutz<span class="beta-pill brand-beta">Beta</span><span class="tagline">Save to grow.</span></a>
     <nav class="nav" aria-label="Main">
       <a href="#home" data-v="home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 15 16 5l11 10v11a2 2 0 0 1-2 2h-6v-8h-6v8H7a2 2 0 0 1-2-2z" fill="var(--c3)"/><path d="M3 16 16 4l13 12" fill="none" stroke="color-mix(in srgb,var(--c3) 60%,#000)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span></a>
       <a href="#spending" data-v="spending"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12" fill="var(--c1)"/><path d="M16 16V4a12 12 0 0 1 11.4 8.3z" fill="var(--gold)"/><path d="M16 16l11.4-3.7A12 12 0 0 1 22 26.4z" fill="var(--c2)"/><circle cx="16" cy="16" r="5" fill="var(--surface)"/></svg><span>Spending now</span></a>
@@ -910,6 +932,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
   </aside>
 
   <main class="wrap">
+    <div class="beta-note" id="betaNote" role="note" hidden><span class="beta-pill">Beta</span><p><b>Banutz is in beta.</b> It is a student project we are building in the open, so some features are still on the way. What is here is free, runs on your phone, and is for learning, not financial advice.</p><button type="button" class="link" id="betaClose">Got it</button></div>
     <div id="err" class="errbar" role="alert" hidden><p id="errMsg"></p><span class="err-act"><button type="button" class="btn" id="errReload">Reload</button><button type="button" class="link" id="errClose">Close</button></span></div>
     <header class="band" id="band" data-view="home">
       <div class="band-top">
@@ -962,30 +985,9 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
 
       <section class="panel story" id="story" aria-label="Your money story"></section>
 
-      <div class="home-grid">
-        <section class="panel snap" id="homeSnap"></section>
-        <section class="panel" id="questPanel">
-          <div class="panel-head"><h2>Today's quests</h2><span class="label" id="qDaily"></span></div>
-          <div class="daily"><span id="qBar"></span></div>
-          <div class="quests" id="quests"></div>
-        </section>
-      </div>
-
-      <div class="home-grid">
-        <section class="panel ahead" id="aheadPanel">
-          <div class="panel-head"><h2>Money ahead</h2><span class="label">Next 45 days</span></div>
-          <form class="bal-form" id="balForm">
-            <label for="balance">How much is in your account right now? (lei)</label>
-            <input id="balance" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 850">
-          </form>
-          <div id="aheadBody"></div>
-        </section>
-        <section class="panel" id="billsPanel">
-          <div class="panel-head"><h2>Bills this month</h2><span class="label" id="billsLabel"></span></div>
-          <div class="bills" id="bills"></div>
-        </section>
-      </div>
+      <section class="panel snap" id="homeSnap"></section>
     </section>
+
 
     <!-- SPENDING -->
     <section class="view" data-view="spending" hidden>
@@ -1002,6 +1004,20 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <button type="button" data-to="methodPanel">How this works</button>
       </nav>
       <section class="tiles" id="tiles"></section>
+      <div class="home-grid">
+        <section class="panel ahead fold closed" id="aheadPanel">
+          <div class="panel-head"><h2>Money ahead</h2><span class="label">Next 45 days</span></div>
+          <form class="bal-form" id="balForm">
+            <label for="balance">How much is in your account right now? (lei)</label>
+            <input id="balance" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 850">
+          </form>
+          <div id="aheadBody"></div>
+        </section>
+        <section class="panel fold closed" id="billsPanel">
+          <div class="panel-head"><h2>Bills this month</h2><span class="label" id="billsLabel"></span></div>
+          <div class="bills" id="bills"></div>
+        </section>
+      </div>
       <section class="panel" id="sortPanel">
         <div class="panel-head"><h2>Step 1 · Sorted</h2><span class="label" id="sortLabel"></span></div>
         <div id="sortBody"></div>
@@ -1173,6 +1189,11 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
       <div class="stat" id="gCheck"></div>
       <div class="stat" id="gLevel"></div>
     </section>
+    <section class="panel" id="questPanel">
+          <div class="panel-head"><h2>Today's quests</h2><span class="label" id="qDaily"></span></div>
+          <div class="daily"><span id="qBar"></span></div>
+          <div class="quests" id="quests"></div>
+        </section>
     <section class="bare">
       <div class="panel-head"><h2>Badges</h2><span class="label" id="bCount"></span></div>
       <div class="badges" id="badges"></div>
@@ -1210,13 +1231,13 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <div id="chipTip" class="chip-tip" role="dialog" aria-labelledby="chipTipT" hidden><b id="chipTipT"></b><p id="chipTipP"></p><button type="button" class="link" id="chipTipX">Got it</button></div>
     <div id="confetti" aria-hidden="true"></div>
     <div id="rain" aria-hidden="true"></div>
-    <footer><a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
+    <footer><span class="beta-pill">Beta</span> <a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
   </main>
     <article id="printReport" class="print-report" aria-hidden="true"></article>
     <div id="tour" class="tour" hidden><div class="tour-ring" id="tourRing"></div><div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" tabindex="-1"><div class="tour-top"><span class="label" id="tourStep"></span></div><h2 id="tourTitle"></h2><p id="tourText"></p><div class="tour-btns"><button type="button" class="link" id="tourSkip">Skip the tour</button><span><button type="button" class="btn" id="tourBack">Back</button> <button type="button" class="btn primary" id="tourNext">Next</button></span></div></div></div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js" integrity="sha384-SnzOobpRMLXZ52iJvZm/C0fYw0OQemTXzTjIsdsfMcrCtCEe9qgzxTd3RSklO5x2" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 /* Show any script failure on the page instead of failing silently. */
 /* Students get a plain message, never a silent failure: what broke, that their data is safe, and what to do. */
@@ -1538,6 +1559,7 @@ function render(){
   const src = document.getElementById('source');
   src.className = 'chip' + (isSample?' example':'');
   const sn = document.getElementById('sampleNote'); if (sn) sn.hidden = !isSample;
+  document.body.classList.toggle('is-sample', isSample);   // the deeper steps appear once your own data is in
   document.getElementById('useSample').hidden = !isSample || !files.length;   // only useful to reset an example that has extra files in it
   document.getElementById('pick').classList.toggle('primary', !isSample);   // one main upload button per screen
   src.textContent = isSample ? (files.length ? `Example data + ${files.length} file${files.length===1?'':'s'}` : 'Example data') : (tx.length ? `Your files · ${files.length}` : 'No data');
@@ -2234,11 +2256,11 @@ function quest(id){
   rollDay(); if (game.done.includes(id)) return;
   const q = QUESTS.find(x=>x.id===id); if (!q) return;
   game.done.push(id); game.xp += q.xp; justDone = id; moodPulse('cheer');
-  let msg = `+${q.xp} XP · ${q.title}`; sfx('coin');
+  let msg = isPhone() ? q.title : `+${q.xp} XP · ${q.title}`; sfx('coin');
   if (game.done.length === QUESTS.length){ checkIn(); msg = `Daily goal done! +${q.xp} XP · ${game.check.count}-day streak`; confetti(); jump(); sfx('milestone'); }
   saveGame(); toast(msg); renderGame();
 }
-function award(key, xp, label){ const k = key+':'+todayISO(); if (game.awarded[k]) return; game.awarded[k] = 1; game.xp += xp; saveGame(); toast(`+${xp} XP · ${label}`); renderGame(); }
+function award(key, xp, label){ const k = key+':'+todayISO(); if (game.awarded[k]) return; game.awarded[k] = 1; game.xp += xp; saveGame(); toast(isPhone() ? label : `+${xp} XP · ${label}`); renderGame(); }
 let toastTimer;
 function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; t.style.animation = 'none'; void t.offsetWidth; t.style.animation = ''; clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ t.hidden = true; }, 2600); }
 function confetti(){
@@ -2352,12 +2374,18 @@ function renderGame(){
   else if (s.streak === 0) say = `Your last day went over your ${lei(s.budget)} budget. Today is a fresh start.`;
   else say = `${s.streak} day${s.streak===1?'':'s'} under budget. Finish today's quests for ${DAILY_XP} XP.`;
   if (s && nextBadge && game.done.length < QUESTS.length && s.hearts > 1) say += ` Next badge: ${nextBadge.name}.`;
+  if (isPhone()){   // phones have no quests, hearts or badges: the cat talks about your money only
+    say = !s ? `Hi, I'm Banutz. I look grumpy, but I'm on your side. Upload a statement and I'll write your report.`
+      : isSample ? `This is an invented student. Upload your own statement and I'll write your report.`
+      : s.streak >= 1 ? `${s.streak} day${s.streak===1?'':'s'} in a row under your daily budget of ${lei(s.budget)}. Keep going!`
+      : `Your last day went over your ${lei(s.budget)} daily budget. Today is a fresh start.`;
+  }
   $('bubble').textContent = say;
   const doneToday = game.check.last === todayISO(), yest = new Date(); yest.setDate(yest.getDate()-1);
   const atRisk = !doneToday && game.check.count > 0 && game.check.last === toISO(yest);
-  setSub('home', !s ? 'Add your first statement to start.' : doneToday ? `Streak safe: ${game.check.count} day${game.check.count===1?'':'s'}. See you tomorrow.` : atRisk ? `Your ${game.check.count}-day streak is at risk. Finish today's quests to keep it.` : 'Finish today\u2019s 4 quests to start a streak.');
+  setSub('home', isPhone() ? (isSample ? 'Upload a statement to get your report.' : 'Add next month\u2019s statement when it arrives.') : !s ? 'Add your first statement to start.' : doneToday ? `Streak safe: ${game.check.count} day${game.check.count===1?'':'s'}. See you tomorrow.` : atRisk ? `Your ${game.check.count}-day streak is at risk. Finish today's quests to keep it.` : 'Finish today\u2019s 4 quests to start a streak.');
   setSub('progress', s ? `${got.length} of ${B.length} badges · Level ${li+1}, ${lname}` : 'Add your data to start earning badges.');
-  const cta = $('cta'); cta.textContent = isSample ? 'Upload my bank statement' : !reportSeen ? 'See my report' : game.done.length === QUESTS.length ? 'See your badges' : game.done.length ? 'Continue quests' : 'Start today\u2019s quests'; cta.classList.toggle('done', game.done.length === QUESTS.length);
+  const cta = $('cta'); cta.textContent = isSample ? 'Upload my bank statement' : (!reportSeen || isPhone()) ? 'See my report' : game.done.length === QUESTS.length ? 'See your badges' : game.done.length ? 'Continue quests' : 'Start today\u2019s quests'; cta.classList.toggle('done', game.done.length === QUESTS.length);
   const overspending = tx.filter(t=>t.amount<0).reduce((a,t)=>a-t.amount,0) > tx.filter(t=>t.amount>0).reduce((a,t)=>a+t.amount,0);
   const dm = !s ? 'supportive' : game.done.length===QUESTS.length ? 'smile' : s.hearts<=1 ? 'sad' : overspending ? 'worried' : s.streak>=3 ? 'youcan' : s.streak===0 ? 'supportive' : 'grumpy';
   setMood(dm); dayMood = MOOD_OF[dm] || dm; updateBuddy();
@@ -2835,6 +2863,7 @@ function renderStory(){
       <span class="n">${x.done ? '✓' : i+1}</span><span class="t">${x.t}</span><span class="d">${x.d}</span></button></li>`).join('')}</ol>`;
 }
 function openFold(id, open = true){ const el = document.getElementById(id); if (!el || !el.classList.contains('fold')) return; el.classList.toggle('closed', !open); const b = el.querySelector('.fold-btn'); if (b){ b.setAttribute('aria-expanded', String(open)); b.querySelector('span').textContent = open ? 'Hide' : 'Show'; } }
+const isPhone = () => matchMedia('(max-width:900px)').matches;
 function goTo(view, id){ openFold(id); navigate(view, {section: id}); }
 document.querySelectorAll('.fold .panel-head').forEach(h=>{
   const b = document.createElement('button'); b.type = 'button'; b.className = 'fold-btn'; b.setAttribute('aria-expanded', 'false');
@@ -2893,6 +2922,7 @@ function showView(v, opts = {}){
   applyView(v, opts);
 }
 function applyView(v, {section=null, restore=false, focus=false} = {}){
+  if (v === 'progress' && isPhone()) v = 'home';   // Badges is a laptop screen; phones keep the essentials
   currentView = v;
   document.querySelectorAll('.view').forEach(sec=>{ sec.hidden = sec.dataset.view !== v; sec.classList.remove('enter'); });
   const shown = document.querySelector(`.view[data-view="${v}"]`); if (shown && !restore){ void shown.offsetWidth; shown.classList.add('enter'); }
@@ -2971,8 +3001,9 @@ document.getElementById('story').addEventListener('click', e=>{ const b = e.targ
 
 document.getElementById('cta').addEventListener('click', ()=>{
   if (isSample){ file.click(); return; }
-  if (!reportSeen){ navigate('spending'); return; }
+  if (!reportSeen || isPhone()){ navigate('spending'); return; }
   if (game.done.length === QUESTS.length){ navigate('progress'); return; }
+  goTo('progress', 'questPanel'); return;
   moodPulse('youcan');
   const qp = document.getElementById('questPanel'); qp.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'center'});
   bump('questPanel','flash');
@@ -3143,6 +3174,7 @@ function loadOCR(){
   ocrLib = new Promise((ok, bad)=>{
     const sc = document.createElement('script');
     sc.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+    sc.integrity = 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F'; sc.crossOrigin = 'anonymous'; sc.referrerPolicy = 'no-referrer';
     sc.onload = ()=> window.Tesseract ? ok(window.Tesseract) : bad(new Error('no reader'));
     sc.onerror = ()=>{ ocrLib = null; showError('The price-tag reader did not load, so scanning is off for now. Check the internet, or type the price yourself'); bad(new Error('the text reader did not load (check the internet connection)')); };
     document.head.appendChild(sc);
@@ -3299,17 +3331,18 @@ applySound();
 const TOUR = [
   {view:'home', sel:'#drop', title:'1. Start here: your bank statement', text:'In your banking app, open Statements, choose last month and export it as CSV (most apps: Statement → Export → CSV). Drop the file here. Banutz reads it on this phone; nothing is uploaded.'},
   {view:'spending', sel:'#reportPanel', title:'2. Your report', text:'Right after the upload you land here: how you spent your money and the three changes worth the most lei.'},
-  {view:'spending', sel:'.jump', title:'3. Go deeper', text:'Fix a category, read your patterns, and take the 1-minute quiz to find your spender type.'},
+  {view:'spending', sel:'.jump, #patternsPanel', title:'3. Go deeper', text:'Fix a category, read your patterns, and take the 1-minute quiz to find your spender type.'},
   {view:'spending', sel:'#fab', title:'4. Add a purchase', text:'Paid cash or about to buy something? Tap + to add it, or scan the price tag in the shop.'},
   {view:'future', sel:'.nav a[data-v="future"]', title:'5. Future You', text:'See what your habits grow into in 5 and 10 years if you keep a little aside every month.'},
   {view:'goal', sel:'.nav a[data-v="goal"]', title:'6. Your goal', text:'Tell Banutz what you are saving for. It draws a map with one step a month until you get there.'},
   {view:'progress', sel:'.nav a[data-v="progress"]', title:'7. Badges and XP', text:'Good money days earn XP, streaks and badges. That is the whole game: save to grow.'},
 ];
 let tourAt = -1;
+const tourSteps = () => TOUR.filter(t => !(t.view === 'progress' && isPhone()));
 function tourVisible(el){ return el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; }
 function placeTour(){
   if (tourAt < 0) return;
-  const st = TOUR[tourAt], el = [...document.querySelectorAll(st.sel)].find(tourVisible);
+  const st = tourSteps()[tourAt]; if (!st) return; const el = [...document.querySelectorAll(st.sel)].find(tourVisible);
   const ring = document.getElementById('tourRing'), card = document.getElementById('tourCard');
   if (!el){ ring.style.cssText = 'left:50%;top:50%;width:0;height:0'; card.style.top = '30%'; return; }
   const r = el.getBoundingClientRect(), pad = 6;
@@ -3323,14 +3356,15 @@ function placeTour(){
   card.style.top = (below + ch <= bottomLimit ? below : above >= 12 ? above : Math.max(12, bottomLimit - ch)) + 'px';
 }
 function showTour(i){
-  if (i < 0 || i >= TOUR.length){ endTour(); return; }
-  tourAt = i; const st = TOUR[i];
+  const T = tourSteps();
+  if (i < 0 || i >= T.length){ endTour(); return; }
+  tourAt = i; const st = T[i];
   document.getElementById('tour').hidden = false;
-  document.getElementById('tourStep').textContent = `${i+1} of ${TOUR.length}`;
+  document.getElementById('tourStep').textContent = `${i+1} of ${T.length}`;
   document.getElementById('tourTitle').textContent = st.title;
   document.getElementById('tourText').textContent = st.text;
   document.getElementById('tourBack').hidden = i === 0;
-  document.getElementById('tourNext').textContent = i === TOUR.length-1 ? 'Let’s go' : 'Next';
+  document.getElementById('tourNext').textContent = i === T.length-1 ? 'Let’s go' : 'Next';
   if (currentView !== st.view) navigate(st.view);
   setTimeout(()=>{
     const el = [...document.querySelectorAll(st.sel)].find(tourVisible);
@@ -3350,6 +3384,9 @@ document.getElementById('tourBack').addEventListener('click', ()=>showTour(tourA
 document.getElementById('tourSkip').addEventListener('click', endTour);
 document.addEventListener('keydown', e=>{ if (tourAt < 0) return; if (e.key==='Escape') endTour(); else if (e.key==='ArrowRight') showTour(tourAt+1); else if (e.key==='ArrowLeft') showTour(tourAt-1); });
 addEventListener('resize', placeTour); addEventListener('scroll', placeTour, {passive:true});
+(function betaNote(){ let seen = null; try { seen = localStorage.getItem('spendmap.beta'); } catch(e){}
+  const n = document.getElementById('betaNote'); if (!n) return; n.hidden = !!seen;
+  document.getElementById('betaClose').addEventListener('click', ()=>{ n.hidden = true; try { localStorage.setItem('spendmap.beta', '1'); } catch(e){} }); })();
 (function firstVisitTour(){ let seen = null; try { seen = localStorage.getItem('spendmap.tour'); } catch(e){ seen = 'done'; }
   if (!seen && isSample && !/[?&]notour\b/.test(location.search)) setTimeout(()=>{ if (tourAt < 0) showTour(0); }, 1400); })();
 setTimeout(()=>{ if (GOOD_MOODS.includes(dayMood)) walkOn('happy'); }, 12000 + Math.random()*20000);   // a surprise stroll, once per visit, only on a good day
