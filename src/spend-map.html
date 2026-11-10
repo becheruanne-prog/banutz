@@ -626,6 +626,20 @@ a.brand:hover{color:color-mix(in srgb,var(--grape) 80%,var(--ink))}
 .band[data-view="goal"]{--vc:var(--p-peach)} .band[data-view="invest"]{--vc:color-mix(in srgb,var(--p-mint) 45%,var(--p-sky));--vt:var(--ink);--vs:color-mix(in srgb,var(--ink) 88%,transparent)}
 .nav a[data-v="invest"]{--nc:var(--c1)} .nav .soon{font-style:normal;font-size:.62rem;letter-spacing:.06em;background:var(--gold);color:#2A1E00;border-radius:999px;padding:1px 6px;margin-left:4px;vertical-align:1px}
 .nav .nav-short{display:none} @media (max-width:900px){.nav .nav-long{display:none}.nav .nav-short{display:inline}.nav .soon{display:block;width:max-content;margin:2px auto 0}}
+
+/* price-tag scanner */
+.scan-row{display:flex}
+.scan-btn{display:inline-flex;align-items:center;gap:10px;width:100%;justify-content:center;background:var(--accent-soft);color:var(--ink);border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
+.scan-btn svg{width:22px;height:22px;flex:none}
+.new-pill{font-style:normal;font-size:.68rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;background:var(--sun);color:#2A1E00;border-radius:999px;padding:2px 8px}
+.scan-box{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start;background:var(--accent-soft);border-radius:14px;padding:10px}
+.scan-box img{width:96px;height:96px;object-fit:cover;border-radius:10px}
+.scan-info p{margin:0 0 8px;font-size:.92rem}
+.scan-picks{display:flex;flex-wrap:wrap;gap:6px}
+.scan-picks button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font:inherit;font-weight:800;cursor:pointer}
+.scan-picks button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.new-banner{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--p-butter);color:var(--ink);border-radius:18px;padding:14px 18px}
+.new-banner p{margin:0;flex:1 1 280px}
 .invest-lead{margin:0;font-size:1.05rem;max-width:65ch}
 .invest-steps{margin:0;padding:0;list-style:none;counter-reset:st;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .invest-steps li{counter-increment:st;background:color-mix(in srgb,var(--p-mint) 40%,var(--surface));border-radius:16px;padding:14px 16px;display:grid;gap:4px;align-content:start}
@@ -788,6 +802,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
 
     <!-- HOME: the simple first screen -->
     <section class="view" data-view="home">
+      <div class="new-banner" id="newScan" hidden><span class="new-pill">New</span><p><b>Scan a price tag.</b> Take a photo of the label in the shop and Banutz fills in the purchase for you. The photo never leaves your phone.</p><button type="button" class="btn primary" id="newScanTry">Try it</button><button type="button" class="link" id="newScanClose" aria-label="Hide this message">Hide</button></div>
 
       <section id="drop" class="drop" aria-label="Add statements and bills">
         <div class="drop-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="9" y="5" width="30" height="38" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2.5"/><path d="M24 31V17m-6 6 6-6 6 6" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1022,6 +1037,14 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <div class="seg" role="group" aria-label="Money out or in">
           <button type="button" data-kind="out" aria-pressed="true">Spent</button>
           <button type="button" data-kind="in" aria-pressed="false">Money in</button>
+        </div>
+        <div class="scan-row" id="qScanRow">
+          <button type="button" class="btn scan-btn" id="qScanBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>Scan a price tag <em class="new-pill">New</em></button>
+          <input id="qPhoto" type="file" accept="image/*" capture="environment" hidden>
+        </div>
+        <div class="scan-box" id="qScan" hidden>
+          <img id="qScanImg" alt="The price tag you photographed">
+          <div class="scan-info"><p id="qScanMsg" role="status" aria-live="polite"></p><div class="scan-picks" id="qScanPicks"></div></div>
         </div>
         <label for="qAmount">Amount (lei)</label>
         <input id="qAmount" type="number" inputmode="decimal" step="0.01" min="0.01" required>
@@ -2601,6 +2624,7 @@ function openQuick(){
   document.getElementById('quickTitle').textContent = 'Add a purchase';
   document.getElementById('qAmount').value = ''; document.getElementById('qNote').value = ''; document.getElementById('qDate').value = todayISO();
   document.getElementById('qErr').hidden = true;
+  document.getElementById('qScan').hidden = true; document.getElementById('qScanRow').hidden = false;
   if (quick.showModal) quick.showModal(); else quick.setAttribute('open','');
   setTimeout(()=>document.getElementById('qAmount').focus(), 50);
 }
@@ -2612,6 +2636,7 @@ document.querySelector('.seg').addEventListener('click', e=>{
   const b = e.target.closest('button'); if (!b) return; qKind = b.dataset.kind;
   document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed', String(x===b)));
   document.getElementById('qCatWrap').hidden = qKind==='in';
+  document.getElementById('qScanRow').hidden = qKind==='in';
   document.getElementById('quickTitle').textContent = qKind==='in' ? 'Add money in' : 'Add a purchase';
 });
 document.getElementById('qCats').addEventListener('click', e=>{
@@ -2635,6 +2660,98 @@ document.getElementById('quickForm').addEventListener('submit', e=>{
   if (qKind !== 'in' && st && a > st.budget){ moodPulse('stop'); sfx('tap'); toast(`Noooo! Stop there. ${lei(a)} is more than your ${lei(st.budget)} daily budget.`); }
   else toast(qKind==='in' ? `Added ${lei(a)} money in` : `Added ${lei(a)} · ${CAT[qCat].name}`);
 });
+
+/* ---------- price-tag scanner ---------- */
+/* Reads the text of a price label (OCR runs in the browser, the photo never leaves the device)
+   and picks the price in lei. Labels from chains like Zara list several currencies; we take RON/LEI,
+   ignore EUR, BGN, HUF and the rest, and never treat a barcode as a price. */
+const TAG_LOCAL = /(?<![A-Z])(RON|LEI|LEU)(?![A-Z])/g;
+const TAG_FOREIGN = /(?<![A-Z])(EUR|EURO|BGN|LEV|HUF|FT|PLN|ZL|CZK|KC|USD|GBP|MDL|RSD|CHF)(?![A-Z])|[€$£]/g;
+function parsePriceTag(text){
+  const picks = [];
+  for (const raw of String(text||'').split(/\n/)){
+    const line = raw.toUpperCase().replace(/(\d)\s*([.,])\s*(\d{2})(?!\d)/g,'$1$2$3');
+    const curs = [];
+    for (const m of line.matchAll(TAG_LOCAL)) curs.push({at:m.index, end:m.index+m[0].length, local:true});
+    for (const m of line.matchAll(TAG_FOREIGN)) curs.push({at:m.index, end:m.index+m[0].length, local:false});
+    for (const m of line.matchAll(/(?<![\d.,])(\d{1,5})(?:([.,])(\d{2}))?(?![\d]|[.,]\d)/g)){
+      if (/\d{6,}/.test(line.slice(Math.max(0,m.index-1), m.index+m[0].length+1))) continue;   // part of a barcode
+      const value = parseFloat(m[1] + (m[3] ? '.'+m[3] : ''));
+      let best = null, dist = 9;
+      for (const c of curs){ const d = c.at >= m.index+m[0].length ? c.at-(m.index+m[0].length) : m.index - c.end; if (d >= 0 && d < dist){ dist = d; best = c; } }
+      if (!m[3] && !best) continue;                     // a bare whole number is a size or a code, not a price
+      if (!(value >= 0.5 && value <= 100000)) continue;
+      picks.push({amount: value, cur: best ? (best.local ? 'RON' : 'foreign') : null});
+    }
+  }
+  const ron = picks.filter(p=>p.cur==='RON'), plain = picks.filter(p=>p.cur===null);
+  const pool = ron.length ? ron : plain;
+  const amount = pool.length ? (ron.length ? Math.min(...ron.map(p=>p.amount)) : pool[0].amount) : null;
+  const options = [...new Set(pool.map(p=>p.amount))].slice(0,5);
+  return {amount, options, foreignOnly: !pool.length && picks.some(p=>p.cur==='foreign')};
+}
+/* The shop name on the label, if it is one the app already knows, and its category. */
+function tagMerchant(text){
+  const up = String(text||'').toUpperCase();
+  for (const c of CATS){ const m = c.re && up.match(c.re); if (m) return {name: niceName(m[0].trim()), cat: c.id}; }
+  return null;
+}
+let ocrLib = null;
+function loadOCR(){
+  if (window.Tesseract) return Promise.resolve(window.Tesseract);
+  if (ocrLib) return ocrLib;
+  ocrLib = new Promise((ok, bad)=>{
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+    sc.onload = ()=> window.Tesseract ? ok(window.Tesseract) : bad(new Error('no reader'));
+    sc.onerror = ()=>{ ocrLib = null; bad(new Error('the text reader did not load (check the internet connection)')); };
+    document.head.appendChild(sc);
+  });
+  return ocrLib;
+}
+const leiExact = v => v.toLocaleString('ro-RO',{minimumFractionDigits:2, maximumFractionDigits:2}) + ' lei';
+function setScanPick(v){
+  document.getElementById('qAmount').value = v.toFixed(2);
+  document.querySelectorAll('#qScanPicks button').forEach(b=>b.setAttribute('aria-pressed', String(+b.dataset.v===v)));
+}
+async function scanTag(file){
+  const box = document.getElementById('qScan'), msg = document.getElementById('qScanMsg'), picks = document.getElementById('qScanPicks');
+  box.hidden = false; picks.innerHTML = '';
+  const url = URL.createObjectURL(file); document.getElementById('qScanImg').src = url;
+  msg.textContent = 'Reading the label…';
+  try{
+    const T = await loadOCR();
+    const res = await T.recognize(file, 'eng');
+    const text = res && res.data ? res.data.text : '';
+    const r = parsePriceTag(text), shop = tagMerchant(text);
+    if (shop && qKind === 'out'){
+      qCat = shop.cat; document.querySelectorAll('#qCats button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.cat===qCat)));
+      const note = document.getElementById('qNote'); if (!note.value) note.value = shop.name;
+    }
+    if (r.amount){
+      picks.innerHTML = r.options.length > 1 ? r.options.map(v=>`<button type="button" data-v="${v}">${leiExact(v)}</button>`).join('') : '';
+      setScanPick(r.amount);
+      msg.textContent = `Found ${leiExact(r.amount)}${shop ? ' at ' + shop.name : ''}. Check it, then tap Add.` + (r.options.length > 1 ? ' Wrong price? Tap another one:' : '');
+    } else {
+      msg.textContent = r.foreignOnly ? 'I only found prices in other currencies. Type the price in lei below.' : 'I could not read a price. Try again closer, in good light, or type it below.';
+    }
+    sfx('tap');
+  } catch(err){
+    msg.textContent = 'Could not read the photo: ' + err.message + '. You can type the price below.';
+  } finally { setTimeout(()=>URL.revokeObjectURL(url), 60000); }
+}
+document.getElementById('qScanBtn').addEventListener('click', ()=>document.getElementById('qPhoto').click());
+document.getElementById('qPhoto').addEventListener('change', e=>{ const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) scanTag(f); });
+document.getElementById('qScanPicks').addEventListener('click', e=>{ const b = e.target.closest('button'); if (b) setScanPick(+b.dataset.v); });
+/* advertise it once on Home */
+(function(){
+  const ban = document.getElementById('newScan'); let seen = false;
+  try{ seen = localStorage.getItem('banutz-seen-scan') === '1'; }catch(e){}
+  ban.hidden = seen;
+  const hide = ()=>{ ban.hidden = true; try{ localStorage.setItem('banutz-seen-scan','1'); }catch(e){} };
+  document.getElementById('newScanClose').addEventListener('click', hide);
+  document.getElementById('newScanTry').addEventListener('click', ()=>{ hide(); openQuick(); setTimeout(()=>document.getElementById('qScanBtn').focus(), 80); });
+})();
 
 /* balance and bills */
 document.getElementById('balForm').addEventListener('submit', e=>e.preventDefault());

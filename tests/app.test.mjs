@@ -438,3 +438,37 @@ test('goal: money moved into savings counts as set aside; other own transfers do
   ]);
   assert.deepEqual(plain(moves.map(t => t.amount)), [-200, -150]);
 });
+
+/* ---------- price-tag scanner ---------- */
+test('price tag: Zara-style label with several currencies picks the RON price', () => {
+  const text = 'ZARA\nREF 4387/321/800\nRON 129,90\nEUR 25,95\nBGN 50,95\nHUF 10.995\n8445617923004';
+  const r = app.parsePriceTag(text);
+  assert.equal(r.amount, 129.9);
+  assert.deepEqual([...r.options], [129.9]);
+});
+test('price tag: lei after the number, and a barcode is never a price', () => {
+  const r = app.parsePriceTag('Tricou bumbac\n59,99 lei\n5941234567890');
+  assert.equal(r.amount, 59.99);
+});
+test('price tag: sale label with old and new price in lei offers both, picks the lower', () => {
+  const r = app.parsePriceTag('Pret vechi 199,99 LEI\nPret nou 149,99 LEI');
+  assert.equal(r.amount, 149.99);
+  assert.deepEqual([...r.options].sort((a,b)=>a-b), [149.99, 199.99]);
+});
+test('price tag: OCR spacing around the decimal is tolerated', () => {
+  assert.equal(app.parsePriceTag('RON 89 , 90').amount, 89.9);
+  assert.equal(app.parsePriceTag('RON129,90').amount, 129.9);
+});
+test('price tag: a label with only foreign currencies does not invent a lei price', () => {
+  const r = app.parsePriceTag('EUR 25,95\nBGN 50,95');
+  assert.equal(r.amount, null);
+  assert.equal(r.foreignOnly, true);
+});
+test('price tag: sizes and plain codes are ignored, nothing found means null', () => {
+  const r = app.parsePriceTag('Size M\nEUR 38\nMade in Portugal 2026');
+  assert.equal(r.amount, null);
+});
+test('price tag: a known shop on the label suggests its category', () => {
+  assert.deepEqual({...app.tagMerchant('ZARA\nRON 129,90')}, {name:'Zara', cat:'shop'});
+  assert.equal(app.tagMerchant('Some small shop\n12,00 lei'), null);
+});

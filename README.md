@@ -1,8 +1,8 @@
 # Banutz
 
-Banutz is a gamified budgeting app for students, named after its grumpy cat mascot. Drop in bank statements (CSV) and bills (PDF), see where the money goes, find out what kind of spender you are, and plan a savings goal. Streaks, budget hearts, XP, daily quests and badges keep it a habit.
+Banutz is a gamified budgeting app for students, named after its grumpy cat mascot. Drop in bank statements (CSV) and bills (PDF), or scan a price tag in the shop with your phone camera, see where the money goes, find out what kind of spender you are, and plan a savings goal. Streaks, budget hearts, XP, daily quests and badges keep it a habit.
 
-Everything runs in the browser. Files are read on the device and never uploaded.
+Everything runs in the browser. Files and photos are read on the device and never uploaded. Price tags are read with Tesseract.js, loaded only when you first scan.
 
 - **Website:** https://becheruanne-prog.github.io/banutz/ (sample files to drag in: [samples/](samples/))
 - **Prompt history (Romanian):** every prompt that built this app, in order: [docs/ISTORIC-PROMPTURI.md](docs/ISTORIC-PROMPTURI.md)
