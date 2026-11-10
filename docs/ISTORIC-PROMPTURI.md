@@ -88,3 +88,6 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 58. „Analizează pagina de cheltuieli și asigură-te că navigarea e simplă și utilizatorii înțeleg ce au de făcut. Îmi încarc tranzacțiile pe o lună și aștept un raport: cum cheltui și ce ar trebui să ajustez. Nu vreau să mă încurce datele de exemplu după ce am pus datele mele reale.”
 59. „Vreau pop-up-uri explicative pe secțiunile principale, ca să-i ghideze pe studenți prin aplicație.”
 60. „Când ceva nu funcționează, spune-le direct: «Oops, s-a stricat».”
+61. „Fă o critică de design și hai să rezolvăm ce găsește.”
+62. „Utilizatorul să poată descărca raportul: ce tip de cheltuitor e și ce ar putea ajusta.”
+63. „Nu știu ce înseamnă iconițele astea (flacăra, inima, fulgerul): nu se pot apăsa și nu au nicio explicație.”
