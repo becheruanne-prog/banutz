@@ -1,0 +1,81 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 2808 >>
+stream
+0.15 0.28 0.79 rg 0 772 595 70 re f
+BT /F2 20 Tf 1 1 1 rg 40 808 Td (LUMINA ENERGIE) Tj ET
+BT /F1 9 Tf 0.85 0.89 1 rg 40 790 Td (Furnizor fictiv de energie electrica - document de test) Tj ET
+BT /F2 18 Tf 1 1 1 rg 484.44 808 Td (FACTURA) Tj ET
+BT /F1 9 Tf 0.85 0.89 1 rg 442.68 790 Td (Serie LE nr. 2026-004512) Tj ET
+1 0.95 0.88 rg 0.71 0.33 0.1 RG 1 w 40 738 515 24 re B
+BT /F2 9 Tf 0.71 0.33 0.1 rg 52 746 Td (DOCUMENT DE TEST / DUMMY INVOICE - NU ESTE O FACTURA REALA. Creat pentru demo Spend Map.) Tj ET
+BT /F2 10 Tf 0.1 0.12 0.17 rg 40 712 Td (Furnizor: Lumina Energie SRL) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 40 698 Td (CUI: RO00000000 \(fictiv\)) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 40 685 Td (Adresa: Str. Exemplului 1, Bucuresti) Tj ET
+BT /F2 10 Tf 0.1 0.12 0.17 rg 320 712 Td (Client: Student Exemplu) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 320 698 Td (Cod client: 1002003004) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 320 685 Td (Loc de consum: Str. Campusului 12, ap. 4) Tj ET
+0.85 0.87 0.9 RG 1 w 40 668 m 555 668 l S
+BT /F2 8 Tf 0.36 0.41 0.47 rg 40 650 Td (DATA EMITERII) Tj ET
+BT /F2 11 Tf 0.1 0.12 0.17 rg 40 634 Td (15.10.2026) Tj ET
+BT /F2 8 Tf 0.36 0.41 0.47 rg 215 650 Td (DATA SCADENTA) Tj ET
+BT /F2 11 Tf 0.1 0.12 0.17 rg 215 634 Td (30.10.2026) Tj ET
+BT /F2 8 Tf 0.36 0.41 0.47 rg 390 650 Td (PERIOADA DE FACTURARE) Tj ET
+BT /F2 11 Tf 0.1 0.12 0.17 rg 390 634 Td (01.09.2026 - 30.09.2026) Tj ET
+0.85 0.87 0.9 RG 1 w 40 620 m 555 620 l S
+0.95 0.96 0.98 rg 40 588 515 22 re f
+BT /F2 9 Tf 0.36 0.41 0.47 rg 48 595 Td (Descriere) Tj ET
+BT /F2 9 Tf 0.36 0.41 0.47 rg 284.64 595 Td (Cantitate) Tj ET
+BT /F2 9 Tf 0.36 0.41 0.47 rg 374.56 595 Td (Pret unitar) Tj ET
+BT /F2 9 Tf 0.36 0.41 0.47 rg 481.48 595 Td (Valoare \(lei\)) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 48 568 Td (Energie electrica activa) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 293.6 568 Td (520 kWh) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 398.8 568 Td (0,9536) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 515.8 568 Td (495,87) Tj ET
+0.85 0.87 0.9 RG 1 w 40 558 m 555 558 l S
+BT /F1 8.5 Tf 0.36 0.41 0.47 rg 48 542 Td (Index vechi 18 240 kWh - index nou 18 760 kWh \(citire distribuitor\)) Tj ET
+BT /F1 10 Tf 0.36 0.41 0.47 rg 330 508 Td (Total fara TVA) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 495.0 508 Td (495,87 lei) Tj ET
+BT /F1 10 Tf 0.36 0.41 0.47 rg 330 490 Td (TVA 21%) Tj ET
+BT /F1 10 Tf 0.1 0.12 0.17 rg 495.0 490 Td (104,13 lei) Tj ET
+0.15 0.28 0.79 rg 320 456 235 30 re f
+BT /F2 11 Tf 1 1 1 rg 330 466 Td (TOTAL DE PLATA) Tj ET
+BT /F2 12 Tf 1 1 1 rg 479.8 466 Td (600,00 lei) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 40 120 Td (Plata se poate face online, la ghiseu sau prin debit direct pana la data scadenta.) Tj ET
+BT /F1 9 Tf 0.36 0.41 0.47 rg 40 106 Td (Acest document este fictiv si a fost generat pentru testarea aplicatiei Spend Map.) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Title (Factura de test Lumina Energie - 600 lei) /Producer (Spend Map demo) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000000354 00000 n 
+0000000456 00000 n 
+0000003316 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+3414
+%%EOF

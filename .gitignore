@@ -1,0 +1,12 @@
+# build output (run: npm run build)
+dist/
+index.html
+
+# local tool and OS clutter
+.DS_Store
+.gstack/
+test-report/
+node_modules/
+
+# local tests with real documents, never committed
+.private-test/
