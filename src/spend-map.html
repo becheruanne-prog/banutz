@@ -712,6 +712,7 @@ a.brand:hover{color:color-mix(in srgb,var(--grape) 80%,var(--ink))}
 .tour-btns{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .tour-btns .btn{min-height:44px}
 @media (prefers-reduced-motion:reduce){.tour-ring,.tour-card{transition:none}}
+#band[data-view="home"] ~ .sample-note #sampleOwn{display:none}
 .sample-note{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--p-sky);color:var(--ink);border-radius:16px;padding:12px 16px;margin:12px 0 0}
 .sample-note p{margin:0;flex:1 1 260px;font-size:.92rem;line-height:1.45}
 
@@ -1492,6 +1493,7 @@ function render(){
   const src = document.getElementById('source');
   src.className = 'chip' + (isSample?' example':'');
   const sn = document.getElementById('sampleNote'); if (sn) sn.hidden = !isSample;
+  document.getElementById('pick').classList.toggle('primary', !isSample);   // one main upload button per screen
   src.textContent = isSample ? (files.length ? `Example data + ${files.length} file${files.length===1?'':'s'}` : 'Example data') : (tx.length ? `Your files · ${files.length}` : 'No data');
 
   const months = [...new Set(tx.map(t=>monthKey(t.date)))].sort();
