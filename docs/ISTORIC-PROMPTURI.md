@@ -91,3 +91,7 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 61. „Fă o critică de design și hai să rezolvăm ce găsește.”
 62. „Utilizatorul să poată descărca raportul: ce tip de cheltuitor e și ce ar putea ajusta.”
 63. „Nu știu ce înseamnă iconițele astea (flacăra, inima, fulgerul): nu se pot apăsa și nu au nicio explicație.”
+64. „Ia feedback-ul lui Cristian și fă un plan de acțiune. Protejează-mi bugetul cât se poate și dă-mi opțiuni.”
+65. „Are sens un disclaimer pentru cei care intră pe site, că e work in progress? Nu vreau să promit lucruri pe care nu le avem încă.”
+66. „Pe telefon, scoate insignele: flacăra, inima, fulgerul și tabul Badges.”
+67. „Aplicația să fie fluidă, logică și, cel mai important, funcțională. Apoi lucrăm la monetizare.”
