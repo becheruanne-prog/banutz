@@ -685,6 +685,15 @@ a.brand:hover{color:color-mix(in srgb,var(--grape) 80%,var(--ink))}
 .goal-types button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
 .goal-types button:active{transform:scale(.96)}
 .board-wrap{background-color:color-mix(in srgb,var(--land,#F4F1FF) 70%,var(--surface)) !important;transition:background-color .4s}
+
+/* the example data is always labelled as such */
+.sample-note{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--p-sky);color:var(--ink);border-radius:16px;padding:12px 16px;margin:12px 0 0}
+.sample-note p{margin:0;flex:1 1 260px;font-size:.92rem;line-height:1.45}
+
+.icon-row{display:flex}
+.goal-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px}
+.goal-icons button{min-height:48px;font-size:1.5rem;border:2px solid var(--line);background:var(--surface);border-radius:14px;cursor:pointer}
+.goal-icons button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
 /* price-tag scanner */
 .scan-row{display:flex}
 .scan-btn{display:inline-flex;align-items:center;gap:10px;width:100%;justify-content:center;background:var(--accent-soft);color:var(--ink);border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)}
@@ -858,6 +867,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <button type="button" class="cta" id="cta">Start today's quests</button>
       </div>
     </header>
+    <div class="sample-note" id="sampleNote" role="note" hidden><span class="new-pill">Example</span><p><b>You are looking at example data:</b> an invented student, so you can see how Banutz works. Add your own bank statement, a bill or a photo of a price tag, and Banutz switches to <b>your data only</b> and does all its maths on it.</p><button type="button" class="btn primary" id="sampleOwn">Use my own data</button></div>
 
     <!-- HOME: the simple first screen -->
     <section class="view" data-view="home">
@@ -1012,6 +1022,8 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
         <div class="chat-row"><div class="cat chat-cat" id="chatCat" data-mood="supportive" aria-hidden="true"></div>
           <div class="chat-bubbles"><p class="bubble" id="chatHello"></p><p class="bubble small" id="chatHint"></p></div></div>
         <div class="goal-types" id="goalTypes" role="group" aria-label="What are you saving for?"></div>
+        <div class="icon-row"><button type="button" class="link" id="iconToggle" aria-expanded="false">🎨 Change the icon of your finish line</button></div>
+        <div class="goal-icons" id="goalIcons" role="group" aria-label="Pick an icon for your finish line" hidden></div>
       </section>
       <section class="panel board" id="boardPanel" aria-label="Your goal trail">
         <div class="panel-head"><h2>Your goal trail</h2><span class="label" id="boardLabel"></span></div>
@@ -1124,7 +1136,7 @@ button:active:not(:disabled),.btn:active{transform:translateY(2px) scale(.98)}
     <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
     <div id="confetti" aria-hidden="true"></div>
     <div id="rain" aria-hidden="true"></div>
-    <footer>Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
+    <footer><a href="privacy.html">Privacy · Confidențialitate</a> · Nothing you add leaves your device. Example data is invented: one student sharing an apartment, with a car and a pet, August to October 2026. Money comes from parents, a scholarship and part-time pay at different times. Impulse shopping is guessed from the shop name (online marketplaces, fashion, beauty), so correct anything that was planned.</footer>
   </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1336,7 +1348,8 @@ function findTransfers(rows){
 
 /* ---------- saved on this device only ---------- */
 const STORE = 'spendmap.data.v1';
-function saveData(){ try { localStorage.setItem(STORE, JSON.stringify({rows: allRows(), files, isSample})); } catch(e){} }
+let storageWarned = false;
+function saveData(){ try { localStorage.setItem(STORE, JSON.stringify({rows: allRows(), files, isSample})); } catch(e){ if (!storageWarned && typeof toast === 'function'){ storageWarned = true; toast('Your browser storage is full, so this could not be saved. Download a backup from Home to keep it.'); } } }
 function loadData(){ try { const d = JSON.parse(localStorage.getItem(STORE)||'null'); return d && Array.isArray(d.rows) ? d : null; } catch(e){ return null; } }
 function status(msg, kind){ const el = document.getElementById('status'); el.textContent = msg; el.className = kind||''; if (msg && currentView !== 'home' && typeof toast === 'function') toast(msg.length > 120 ? msg.slice(0,117)+'…' : msg); }
 
@@ -1344,7 +1357,7 @@ async function pdfText(file){
   if (!window.pdfjsLib) throw new Error('the PDF reader did not load (check the internet connection)');
   const doc = await pdfjsLib.getDocument({data: new Uint8Array(await file.arrayBuffer())}).promise;
   let out = '';
-  for (let i=1; i<=doc.numPages; i++){ const c = await (await doc.getPage(i)).getTextContent(); out += c.items.map(it=>it.str + (it.hasEOL ? '\n' : ' ')).join('') + '\n'; }
+  for (let i=1; i<=Math.min(doc.numPages, MAX_PDF_PAGES); i++){ const c = await (await doc.getPage(i)).getTextContent(); out += c.items.map(it=>it.str + (it.hasEOL ? '\n' : ' ')).join('') + '\n'; }
   return out;
 }
 /* Which currency a bill is in: RON unless the text clearly uses another one more. */
@@ -1381,6 +1394,7 @@ function billFromText(text, name){
   return {date, desc: (supplier.toUpperCase() + ' FACTURA' + kind).replace(/\s+/g,' '), amount: -Math.abs(total), ...(cur !== 'RON' ? {cur} : {}), ...(found ? {} : {noDate: true})};
 }
 
+const MAX_FILE_MB = 15, MAX_PDF_PAGES = 20;
 async function importFiles(list){
   const all = [...list];
   if (!all.length) return;
@@ -1388,6 +1402,9 @@ async function importFiles(list){
   let statements = 0;
   for (const f of all){
     try {
+      if (f.size > MAX_FILE_MB*1024*1024){ bad.push(`${f.name} (${(f.size/1048576).toFixed(1)} MB, the limit is ${MAX_FILE_MB} MB per file)`); continue; }
+      if (!f.size){ bad.push(f.name + ' (the file is empty)'); continue; }
+      if (/^image\//.test(f.type) || /\.(jpe?g|png|heic|webp|gif)$/i.test(f.name)){ bad.push(f.name + ' (a photo: use Scan a price tag or receipt in the + button)'); continue; }
       if (/\.pdf$/i.test(f.name) || f.type === 'application/pdf'){
         const bill = billFromText(await pdfText(f), f.name);
         if (bill){ bill.src = f.name; added.push(bill); bills.push(bill); files.push(f.name); }
@@ -1403,12 +1420,12 @@ async function importFiles(list){
     } catch(e){ bad.push(f.name + ' (' + (e && e.message ? e.message : 'could not be read') + ')'); }
   }
   if (added.length){
-    // Statements replace the example data. A bill on its own is added to whatever is showing.
-    const replace = isSample && statements > 0;
+    // Your own data replaces the example data: statements and bills alike, so the two never mix.
+    const replace = isSample;
     const base = replace ? [] : allRows();
     if (replace) files = files.filter(n=>all.some(f=>f.name===n));
     const before = base.length;
-    const dup = setData(base.concat(added), isSample && !statements);
+    const dup = setData(base.concat(added), replace ? false : isSample);
     const newCount = tx.length + transfers.length - before;
     const billTxt = bills.map(b=>{
       const t = tx.find(x=>x.date===b.date && x.desc===b.desc), when = b.noDate ? 'with no readable date (dated today, change it if needed)' : `on ${+b.date.slice(8)} ${MONTHS_EN[+b.date.slice(5,7)-1]}`;
@@ -1429,6 +1446,7 @@ function render(){
   for (const t of tx) t.cat = categorize(t);
   const src = document.getElementById('source');
   src.className = 'chip' + (isSample?' example':'');
+  const sn = document.getElementById('sampleNote'); if (sn) sn.hidden = !isSample;
   src.textContent = isSample ? (files.length ? `Example data + ${files.length} file${files.length===1?'':'s'}` : 'Example data') : (tx.length ? `Your files · ${files.length}` : 'No data');
 
   const months = [...new Set(tx.map(t=>monthKey(t.date)))].sort();
@@ -1791,6 +1809,7 @@ function readGoal(){
     date: document.getElementById('gDate').value,
     saved: Math.max(0, +document.getElementById('gSaved').value || 0),
     type: goal.type || null,
+    icon: goal.icon || null,
   };
   try{ localStorage.setItem('spendmap.goal', JSON.stringify(goal)); }catch(e){}
   renderGoal(); renderGame();
@@ -2277,6 +2296,7 @@ function goalSaved(){ return Math.max(0, +goal.saved || 0) + autoSaved(); }
 
 /* ---------- goal trail ---------- */
 /* Each goal draws its own map: its finish line, the landmarks at 25/50/75% and the colour of the land. */
+const GOAL_ICONS = ['🌟','🎸','🎮','📷','🏠','🐶','🎤','⚽','💍','🏝️','🎨','🛵','🎟️','👟','💻','✈️','🎓','🚀','🚗','☂️'];
 const GOAL_TYPES = {
   trip:    {label:'A trip',             finish:'✈️', marks:['🧳','🗺️','🛂'], tint:'#CDEAF8', name:'Trip abroad'},
   tech:    {label:'Laptop or gadget',   finish:'💻', marks:['🔌','📦','🖱️'], tint:'#E6DEFC', name:'Laptop for next semester'},
@@ -2285,7 +2305,7 @@ const GOAL_TYPES = {
   study:   {label:'Course or studies',  finish:'🎓', marks:['📚','✏️','🧠'], tint:'#D3F2D6', name:'A course I want'},
   business:{label:'My own business',    finish:'🚀', marks:['💡','🛠️','📣'], tint:'#FFE3D1', name:'Starting my business'},
   invest:  {label:'First investment',   finish:'📈', marks:['🌱','🌿','🌳'], tint:'#D9F5EC', name:'My first investment'},
-  other:   {label:'Something else',     finish:'🌟', marks:['🎯','🎈','🎁'], tint:'#F4F1FF', name:''}
+  other:   {label:'My own goal',        finish:'✏️', marks:['🎯','🎈','🎁'], tint:'#F4F1FF', name:''}
 };
 /* How many steps the map has: about one per month until the deadline, between 4 and 12. Pure, for tests. */
 function goalSteps(monthsLeft){ return monthsLeft > 0 ? Math.max(4, Math.min(12, Math.round(monthsLeft))) : 8; }
@@ -2313,25 +2333,36 @@ function renderGoalChat(){
   const cur = goal.type || (goal.amount ? guessGoalType(goal.name) : null);
   box.innerHTML = Object.entries(GOAL_TYPES).map(([id,t])=>`<button type="button" data-type="${id}" aria-pressed="${id===cur}"><span aria-hidden="true">${t.finish}</span>${t.label}</button>`).join('');
   const cat = document.getElementById('chatCat'); if (!cat.firstChild) cat.innerHTML = catSVG({});
-  const has = goal.amount > 0, steps = goalSteps(monthsUntil(goal.date)), gt = GOAL_TYPES[cur] || GOAL_TYPES.other;
+  const has = goal.amount > 0, steps = goalSteps(monthsUntil(goal.date)), gt0 = GOAL_TYPES[cur] || GOAL_TYPES.other, gt = {...gt0, finish: goal.icon || (cur==='other' ? '🌟' : gt0.finish)};
+  document.getElementById('goalIcons').innerHTML = GOAL_ICONS.map(ic=>`<button type="button" data-icon="${ic}" aria-label="Icon ${ic}" aria-pressed="${ic===gt.finish}">${ic}</button>`).join('');
   cat.dataset.mood = has ? 'youcan' : 'supportive';
   document.getElementById('chatHello').textContent = has
     ? `Your map to ${goal.name || 'your goal'} ${gt.finish} has ${steps} steps, about one a month until ${goal.date ? monthLabel(goal.date) : 'you get there'}.`
     : 'Hey, do you have a goal? Something you are dreaming of: a trip, a laptop, a cushion for rainy days?';
   document.getElementById('chatHint').textContent = has
-    ? 'Dreaming of something else? Pick it below and I will draw a new map. Change the cost or the date under the map anytime.'
-    : 'Pick one below, tell me what it costs and by when, and I will draw your map.';
+    ? 'Dreaming of something else? Pick an idea below or make your own goal. You can rename it, change its icon, the cost or the date anytime.'
+    : 'Pick an idea below or make your own goal, tell me what it costs and by when, and I will draw your map.';
 }
 document.getElementById('goalTypes').addEventListener('click', e=>{
   const b = e.target.closest('button'); if (!b) return;
   const t = b.dataset.type, gt = GOAL_TYPES[t], nameEl = document.getElementById('gName');
   const wasDefault = !nameEl.value || Object.values(GOAL_TYPES).some(x=>x.name && x.name === nameEl.value);
-  if (wasDefault) nameEl.value = gt.name;
+  if (t === 'other'){ nameEl.value = ''; goal.icon = goal.icon || '🌟'; toggleIcons(true); }
+  else { if (wasDefault) nameEl.value = gt.name; goal.icon = null; }
   goal.type = t; sfx('tap'); buzz(10);
   readGoal();
   const empty = ['gName','gAmount','gDate'].map(id=>document.getElementById(id)).find(el=>!el.value);
   if (empty) setTimeout(()=>empty.focus(), 60);
   else document.getElementById('boardPanel').scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block:'start'});
+});
+function toggleIcons(open){
+  const box = document.getElementById('goalIcons'), b = document.getElementById('iconToggle');
+  const show = open === undefined ? box.hidden : open; box.hidden = !show; b.setAttribute('aria-expanded', String(show));
+}
+document.getElementById('iconToggle').addEventListener('click', ()=>{ toggleIcons(); sfx('tap'); });
+document.getElementById('goalIcons').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if (!b) return;
+  goal.icon = b.dataset.icon; sfx('tap'); buzz(10); readGoal();
 });
 function renderBoard(P){
   renderGoalChat();
@@ -2341,7 +2372,8 @@ function renderBoard(P){
   const frac = saved/amount, pct = Math.round(frac*100);
   const atDeadline = (P && P.monthsLeft > 0 && P.plan > 0) ? Math.min(1, (saved + P.plan*P.monthsLeft)/amount) : frac;
   const name = esc(goal.name || 'your goal');
-  const GT = GOAL_TYPES[goal.type] || GOAL_TYPES[guessGoalType(goal.name)] || GOAL_TYPES.other;
+  const GT0 = GOAL_TYPES[goal.type] || GOAL_TYPES[guessGoalType(goal.name)] || GOAL_TYPES.other;
+  const GT = goal.icon ? {...GT0, finish: goal.icon} : (GT0 === GOAL_TYPES.other ? {...GT0, finish:'🌟'} : GT0);
   const TILES = goalSteps(monthsUntil(goal.date)), STARS = starSteps(TILES);
   const wrap = typeof box.closest === 'function' ? box.closest('.board-wrap') : null; if (wrap && wrap.style) wrap.style.setProperty('--land', GT.tint);
   lab.textContent = pct >= 100 ? 'Goal reached' : `${TILES - Math.floor(frac*TILES)} step${TILES - Math.floor(frac*TILES)===1?'':'s'} to go`;
@@ -2746,6 +2778,7 @@ document.getElementById('trySample').onclick = () => {
   files = []; isSample = true;   // replace whatever is loaded
   importFiles(Object.entries(SAMPLE_FILES).map(([name, text]) => new File([text], name, {type:'text/csv'})));
 };
+document.getElementById('sampleOwn').addEventListener('click', ()=>{ navigate('home'); setTimeout(()=>{ const d = document.getElementById('drop') || document.getElementById('file'); if (d && d.scrollIntoView) d.scrollIntoView({behavior: reduceMotion() ? 'auto' : 'smooth', block:'center'}); document.getElementById('file').click(); }, 350); });
 document.getElementById('useSample').onclick = () => { files = []; setData(sampleData(), true); status('Example data loaded: 3 months of invented student spending.', 'ok'); };
 
 /* quick add */
@@ -2791,8 +2824,11 @@ document.getElementById('quickForm').addEventListener('submit', e=>{
   const row = qKind==='in'
     ? {date, desc: (note || 'MONEY IN').toUpperCase(), amount: Math.round(a*100)/100, src:'manual'}
     : {date, desc: (note || CAT[qCat].name).toUpperCase(), amount: -Math.round(a*100)/100, src:'manual', fixed: qCat, ...(qPhotoThumb ? {photo: qPhotoThumb} : {})};
-  setData(allRows().concat(row), isSample, {keepMonth:true});
+  const fromSample = isSample;
+  if (fromSample) files = [];
+  setData(fromSample ? [row] : allRows().concat(row), fromSample ? false : isSample, {keepMonth: !fromSample});
   closeQuick();
+  if (fromSample) setTimeout(()=>toast('Your own data starts here. The example data is put away; get it back anytime from Home.'), 2600);
   buzz(25); award('log', 10, 'Logged a purchase');   // first, so the confirmation below is the message that stays
   const st = dataStats();
   if (qKind !== 'in' && st && a > st.budget){ moodPulse('stop'); sfx('tap'); toast(`Noooo! Stop there. ${lei(a)} is more than your ${lei(st.budget)} daily budget.`); }
@@ -2807,7 +2843,7 @@ const GOOD_MOODS = ['happy','cheer','youcan'], LOW_MOODS = ['sad','broke','stop'
 const FORWARD_VIEWS = ['goal','future','invest','progress'];
 const BUDDY_LINES = {
   spending:{grumpy:'Hmm. Let us see where it all went.', sad:'Only a few hearts left. Go easy today.', broke:'Today ran over. Tomorrow is a new page.', stop:'Noooo! Check that last one.', supportive:'Add a statement and I will sort it for you.', youcan:'Look at that streak. Keep it going!', happy:'Under budget today. Proud of you!', cheer:'Look at you go!'},
-  goal:{low:'Every leu you put here is for future you.', mid:'One step at a time. You are on the trail.', good:'Look how far you have come!'},
+  goal:{low:'Every 🦁 you put here is for future you.', mid:'One step at a time. You are on the trail.', good:'Look how far you have come!'},
   future:{low:'Today is one day. Your habits are the long game.', mid:'Small changes now, big numbers later.', good:'Future you is cheering right now!'},
   invest:{low:'Saving comes first, growing comes next.', mid:'Learn first, then let your money work.', good:'Ready to grow? This is where it starts.'},
   progress:{low:'Every badge starts with one small step.', mid:'Collect them all, one habit at a time.', good:'Shiny! The next one is close.'}
@@ -2908,6 +2944,10 @@ function setScanPick(v){
   document.querySelectorAll('#qScanPicks button').forEach(b=>b.setAttribute('aria-pressed', String(+b.dataset.v===v)));
 }
 let qPhotoThumb = null;
+/* Phone photos are 12 MP or more; reading a 1600 px copy is several times faster and just as accurate for price labels. */
+function shrinkForOCR(url, file){
+  return new Promise(ok=>{ const im = new Image(); im.onload = ()=>{ try{ const k = Math.min(1, 1600/Math.max(im.width, im.height)); if (k === 1) return ok(file); const c = document.createElement('canvas'); c.width = Math.round(im.width*k); c.height = Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height); c.toBlob(b=>ok(b || file), 'image/jpeg', .9); }catch(e){ ok(file); } }; im.onerror = ()=>ok(file); im.src = url; });
+}
 const buzz = p => { try{ if (navigator.vibrate) navigator.vibrate(p); }catch(e){} };
 /* A small copy of the photo to keep with the purchase (about 5 KB), so you can see later what you bought. */
 function thumbOf(url){
@@ -2923,7 +2963,7 @@ async function scanTag(file){
   msg.textContent = 'Reading the price and the currency…';
   try{
     const T = await loadOCR();
-    const res = await T.recognize(file, 'eng');
+    const res = await T.recognize(await shrinkForOCR(url, file), 'eng');
     const text = res && res.data ? res.data.text : '';
     const r = parsePriceTag(text), shop = tagMerchant(text);
     if (shop && qKind === 'out'){
