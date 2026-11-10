@@ -85,3 +85,6 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 55. „Pune o politică de confidențialitate pe site.”
 56. „Ce limite au acum la încărcarea fișierelor, PDF-uri și altele? Nu vreau să se strice aplicația.”
 57. „Pe lângă șabloanele de obiective, utilizatorii să-și poată adăuga sau personaliza propriul obiectiv.”
+58. „Analizează pagina de cheltuieli și asigură-te că navigarea e simplă și utilizatorii înțeleg ce au de făcut. Îmi încarc tranzacțiile pe o lună și aștept un raport: cum cheltui și ce ar trebui să ajustez. Nu vreau să mă încurce datele de exemplu după ce am pus datele mele reale.”
+59. „Vreau pop-up-uri explicative pe secțiunile principale, ca să-i ghideze pe studenți prin aplicație.”
+60. „Când ceva nu funcționează, spune-le direct: «Oops, s-a stricat».”
