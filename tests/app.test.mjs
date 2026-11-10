@@ -472,3 +472,22 @@ test('price tag: a known shop on the label suggests its category', () => {
   assert.deepEqual({...app.tagMerchant('ZARA\nRON 129,90')}, {name:'Zara', cat:'shop'});
   assert.equal(app.tagMerchant('Some small shop\n12,00 lei'), null);
 });
+
+/* ---------- Banutz on every screen ---------- */
+test('cat mood: Spending now shows the real mood of the day, even a bad one', () => {
+  assert.equal(app.moodForView('spending', 'broke'), 'broke');
+  assert.equal(app.moodForView('spending', 'sad'), 'sad');
+  assert.equal(app.moodForView('home', 'stop'), 'stop');
+});
+test('cat mood: future screens never show sadness or grumpiness', () => {
+  for (const v of ['goal','future','invest','progress']){
+    for (const m of ['sad','broke','stop','grumpy','supportive']){
+      assert.ok(['supportive','youcan'].includes(app.moodForView(v, m)), `${v}/${m}`);
+    }
+    for (const m of ['happy','cheer','youcan']) assert.equal(app.moodForView(v, m), 'cheer');
+  }
+});
+test('cat mood: every screen has an encouraging line on a bad day', () => {
+  for (const v of ['goal','future','invest','progress']) assert.ok(app.buddyLine(v, 'broke').length > 10);
+  assert.match(app.buddyLine('spending', 'broke'), /new page/);
+});
