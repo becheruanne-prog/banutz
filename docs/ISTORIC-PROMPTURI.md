@@ -81,3 +81,7 @@ Nicio linie de cod nu a fost scrisă de mână. Fiecare pas a fost o conversați
 51. „Scanarea trebuie să citească prețul și moneda. Dacă nu poate citi, utilizatorul să poată scrie prețul, cu poza alături.”
 52. „Pisica ce traversează ecranul e mereu supărată, e enervant. Să apară mai rar.”
 53. „Zona de obiectiv să fie personalizabilă: harta să fie definită de obiectivul fiecăruia, nu fixă. Și să-i invite pe utilizatori: «Hei, ai un obiectiv?»”
+54. „Să fie clar că datele sunt doar de exemplu, ca să înțeleagă cum funcționează. Când cineva își încarcă datele, aplicația lucrează doar pe datele lui.”
+55. „Pune o politică de confidențialitate pe site.”
+56. „Ce limite au acum la încărcarea fișierelor, PDF-uri și altele? Nu vreau să se strice aplicația.”
+57. „Pe lângă șabloanele de obiective, utilizatorii să-și poată adăuga sau personaliza propriul obiectiv.”
